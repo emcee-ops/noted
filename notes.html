@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Notes - Noted</title>
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #e9edf0;
+    color: #111;
+}
+
+.app {
+    min-height: 100vh;
+    background: #e9edf0;
+    padding: 0 13px 16px 16px;
+}
+
+/* ========== TOP AREA ========== */
+
+.topbar {
+    height: 93px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top-logo {
+    background: white;
+    border-radius: 7px;
+    padding: 8px 11px;
+    font-size: 17px;
+    font-weight: bold;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.top-logo img {
+    width: 23px;
+    height: 27px;
+    object-fit: contain;
+    display: block;
+}
+
+/* ========== TIMER CARD (same as dashboard) ========== */
+.timer-box {
+    background: white;
+    border-radius: 8px;
+    width: 310px;
+    height: 85px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.08);
+}
+
+.timer-title { display: flex; align-items: center; gap: 5px; color: #777; font-size: 13px; margin-bottom: 2px; white-space: nowrap; }
+.timer-title svg { width: 14px; height: 14px; fill: none; stroke: #777; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.timer-row { display: flex; align-items: center; gap: 12px; flex-wrap: nowrap; }
+.timer { font-size: 28px; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+
+.play { width: 28px; min-width: 28px; height: 28px; flex: 0 0 28px; padding: 0; border: none; background: none; color: #111; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.play svg { width: 26px; height: 26px; min-width: 26px; display: block; fill: none; stroke: #111; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.play.dark svg circle { fill: #202427; stroke: #202427; }
+.play.dark svg path { stroke: #fff; }
+.play.dark svg path[fill] { fill: #fff; }
+.play.dark:hover svg circle { fill: #444; stroke: #444; }
+.timer-tools { display: flex; align-items: center; gap: 12px; }
+
+.next { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; line-height: 1; font-weight: 700; padding: 4px 9px 4px 7px; border-radius: 999px; white-space: nowrap; }
+.next svg { width: 11px; height: 11px; flex-shrink: 0; fill: currentColor; stroke: none; }
+.next small { font-size: 11px; font-weight: 400; opacity: .8; }
+.next.auto { background: #1f2329; color: #fff; }
+.next.manual { background: #eceff4; color: #5b6475; }
+
+/* ========== CONTENT ========== */
+
+.content-area {
+    display: flex;
+    gap: 15px;
+    height: calc(100vh - 109px);
+    min-height: 560px;
+}
+
+/* ========== SIDEBAR ========== */
+
+.sidebar {
+    position: relative;
+    width: 229px;
+    flex-shrink: 0;
+    height: 100%;
+    background: white;
+    border-radius: 14px;
+    padding: 24px 14px 22px;
+    display: flex;
+    flex-direction: column;
+}
+
+.hello {
+    color: #777;
+    font-size: 14px;
+}
+
+.username {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 6px;
+    margin-bottom: 62px;
+}
+
+/* COLLAPSE */
+.collapse-button {
+    position: absolute;
+    top: 21px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid #eee;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collapse-button svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #111;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* MENU */
+.menu {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 2px;
+    line-height: 17px;
+    color: #111;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.menu-item.active {
+    font-weight: bold;
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: #111;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ARROW PAIR (down = closed, up = open) */
+.arrow-wrap {
+    margin-left: -4px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    display: flex;
+}
+
+.arrow {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: #111;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.arrow-up {
+    display: none;
+}
+
+.arrow-wrap.open .arrow-down {
+    display: none;
+}
+
+.arrow-wrap.open .arrow-up {
+    display: block;
+}
+
+/* PLUS BUTTON */
+.add-button {
+    margin-left: auto;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #202427;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-button svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: white;
+    stroke-width: 3;
+    stroke-linecap: round;
+}
+
+/* NOTE LIST */
+.note-list {
+    display: none;
+    margin: -2px 5px 7px 37px;
+    max-height: 120px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.note-list.open {
+    display: block;
+}
+
+/* thin scrollbar */
+.note-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.note-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.note-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    padding: 5px 0;
+    line-height: 16px;
+    color: #777;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.note-item span:first-child {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.note-item.active {
+    color: #111;
+    font-weight: bold;
+}
+
+.dots {
+    color: #777;
+    padding: 0 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.dots:hover {
+    background: #dde2e7;
+    color: #111;
+}
+
+/* HOVER EFFECTS (no layout changes) */
+.menu-item,
+.note-item {
+    transition: background .15s, box-shadow .15s;
+}
+
+.menu-item:hover {
+    background: #eef1f4;
+    box-shadow: -8px 0 0 #eef1f4, 8px 0 0 #eef1f4;
+}
+
+.note-item:hover {
+    background: #eef1f4;
+    color: #111;
+    box-shadow: -6px 0 0 #eef1f4, 6px 0 0 #eef1f4;
+}
+
+.collapse-button:hover {
+    background: #eef1f4;
+}
+
+/* COLLAPSED SIDEBAR */
+.sidebar { overflow: hidden; transition: width .2s ease; }
+.collapse-button svg { transition: transform .2s ease; }
+.sidebar.collapsed { width: 72px; padding-left: 10px; padding-right: 10px; }
+.sidebar.collapsed .hello, .sidebar.collapsed .username { display: none; }
+.sidebar.collapsed .collapse-button { right: auto; left: 50%; transform: translateX(-50%); }
+.sidebar.collapsed .collapse-button svg { transform: rotate(180deg); }
+.sidebar.collapsed .menu { margin-top: 62px; }
+.sidebar.collapsed .menu-item { font-size: 0; gap: 0; justify-content: center; }
+.sidebar.collapsed .menu-item span,
+.sidebar.collapsed .arrow-wrap,
+.sidebar.collapsed .add-button,
+.sidebar.collapsed .note-list { display: none !important; }
+.sidebar.collapsed .profile { padding: 10px 4px; }
+.sidebar.collapsed .profile-top { justify-content: center; }
+.sidebar.collapsed .profile-top > div:last-child { display: none; }
+.sidebar.collapsed .logout { font-size: 0; gap: 0; justify-content: center; }
+
+/* PROFILE */
+.profile {
+    margin-top: auto;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 10px 8px;
+    box-shadow: 0 1px 5px rgba(0,0,0,.05);
+}
+
+.profile-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #202427;
+    color: white;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profile-name {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.email {
+    font-size: 10px;
+    color: #777;
+    margin-top: 2px;
+}
+
+.logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.logout svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: #111;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.logout:hover {
+    opacity: .6;
+}
+
+/* ========== MAIN NOTE ========== */
+
+.main {
+    flex: 1;
+    min-width: 0;
+}
+
+.note-content {
+    background: #f7f8fa;
+    border-radius: 13px;
+    height: 100%;
+    padding: 16px 14px;
+    overflow: auto;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.annotate {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    height: 31px;
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.annotate:hover {
+    background: #eef1f4;
+}
+
+.annotate svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: #111;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.note-title {
+    font-size: 29px;
+    line-height: 33px;
+    margin-bottom: 14px;
+}
+
+.note-text {
+    font-size: 17px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+/* CREATE / EDIT NOTE */
+.new-note {
+    display: none;
+}
+
+.new-note input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.new-note textarea {
+    width: 100%;
+    height: 250px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    resize: none;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.save-button {
+    background: #202427;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background: white;
+    color: #111;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px 18px;
+    cursor: pointer;
+}
+
+/* ========== ANNOTATIONS ========== */
+
+.highlight {
+    background: #fff3a3;
+    border-radius: 3px;
+    padding: 1px 0;
+    cursor: pointer;
+}
+
+.highlight:hover {
+    background: #ffe96b;
+}
+
+.highlight.has-comment {
+    border-bottom: 2px solid #f0c000;
+}
+
+.annotate-quote {
+    background: #fff3a3;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #111;
+    margin-bottom: 10px;
+    max-height: 70px;
+    overflow: auto;
+    word-wrap: break-word;
+}
+
+.annotate-input {
+    width: 100%;
+    height: 80px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    resize: none;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.selection-bubble {
+    display: none;
+    position: fixed;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    background: #202427;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 13px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.3);
+    cursor: pointer;
+    z-index: 600;
+}
+
+.selection-bubble.show {
+    display: flex;
+}
+
+.selection-bubble svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: white;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%);
+    background: #202427;
+    color: white;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 2000;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+.remove-annotation-button {
+    background: white;
+    border: 1px solid #f0c4c4;
+    color: #c62828;
+}
+
+.annotate-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background: #fafafa;
+    color: #777;
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.annotate-close:hover {
+    background: #eef1f4;
+    color: #111;
+}
+
+.annotate-comment-view {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #111;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 60px;
+    margin-bottom: 14px;
+    max-height: 120px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.annotate-comment-view.empty {
+    color: #999;
+}
+
+/* ========== THREE DOTS MENU ========== */
+
+.dots-menu {
+    display: none;
+    position: fixed;
+    min-width: 130px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 4px;
+    z-index: 500;
+}
+
+.dots-menu.open {
+    display: block;
+}
+
+.dots-menu button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: none;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #111;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dots-menu button:hover {
+    background: #eef1f4;
+}
+
+.dots-menu button.danger {
+    color: #c62828;
+}
+
+.dots-menu svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ========== POPUPS (logout + delete) ========== */
+
+.logout-modal,
+.delete-modal,
+.annotate-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.78);
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.logout-box {
+    width: 294px;
+    background: white;
+    border-radius: 13px;
+    padding: 18px 12px 12px;
+}
+
+.logout-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 22px;
+}
+
+.logout-message {
+    color: #777;
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 18px;
+    word-wrap: break-word;
+}
+
+.logout-message strong {
+    color: #111;
+}
+
+.logout-actions {
+    display: flex;
+    gap: 9px;
+}
+
+.stay-button,
+.confirm-logout-button {
+    flex: 1;
+    height: 36px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.stay-button {
+    background: white;
+    border: 1px solid #ddd;
+}
+
+.confirm-logout-button {
+    background: #202427;
+    color: white;
+    border: none;
+}
+
+.confirm-delete-button {
+    background: #c62828;
+}
+
+/* ========== TIMER POPUP (same as dashboard) ========== */
+.timer-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); align-items: center; justify-content: center; padding: 16px; z-index: 1000; }
+.tm-modal { --ink: #0f1a33; --muted: #6b7a99; --blue: #0a6cff; --line: #dfe5f0; --tcard: #f9fbff; --dark: #262b33;
+    width: min(420px, 100%); max-height: 100%; overflow: auto; background: #fcfdff; color: var(--ink); border-radius: 16px; padding: 20px 20px 18px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+.tm-modal button { font: inherit; color: inherit; cursor: pointer; }
+.tm-modal button:focus-visible, .tm-switch input:focus-visible + .tm-track { outline: 3px solid #8fbaff; outline-offset: 2px; }
+.tm-title { font-size: 20px; letter-spacing: -.01em; }
+.tm-sub { margin-top: 2px; color: var(--muted); font-size: 13px; }
+.tm-close { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; border-radius: 50%; border: 0; background: #e9ecf2; font-size: 18px; line-height: 1; }
+.tm-close:hover { background: #dde1ea; }
+.tm-dial { width: 112px; height: 112px; border-radius: 50%; border: 4px solid var(--blue); margin: 8px auto 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tm-dial-time { font-size: 28px; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.tm-dial-tag { color: var(--muted); font-size: 10px; letter-spacing: .05em; }
+.tm-h2 { font-size: 16px; }
+.tm-desc { margin: 2px 0 12px; color: var(--muted); font-size: 12px; }
+.tm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tm-card { background: var(--tcard); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.tm-label { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+.tm-stepper { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.tm-btn { width: 30px; height: 30px; border-radius: 8px; background: #fff; border: 1px solid var(--line); font-size: 16px; line-height: 1; }
+.tm-btn:hover:not(:disabled) { background: #eef3ff; }
+.tm-btn:disabled { opacity: .35; cursor: not-allowed; }
+.tm-val { font-size: 16px; min-width: 24px; text-align: center; font-variant-numeric: tabular-nums; }
+.tm-unit { color: var(--muted); font-size: 11px; }
+.tm-toggle { display: flex; align-items: center; gap: 10px; }
+.tm-toggle-text { flex: 1; }
+.tm-name { font-weight: 600; font-size: 12px; }
+.tm-hint { color: var(--muted); font-size: 10px; margin-top: 3px; line-height: 1.4; }
+.tm-switch { position: relative; width: 38px; height: 22px; flex: none; }
+.tm-switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.tm-track { position: absolute; inset: 0; border-radius: 11px; background: #cfd6e4; transition: background .2s; }
+.tm-track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.tm-switch input:checked + .tm-track { background: var(--blue); }
+.tm-switch input:checked + .tm-track::after { transform: translateX(16px); }
+.tm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.tm-actions button { height: 38px; border-radius: 8px; font-size: 14px; }
+.tm-cancel { background: #fff; border: 1px solid var(--line); }
+.tm-cancel:hover { background: #f1f4fa; }
+.tm-save { background: var(--dark); color: #fff !important; border: 0; }
+.tm-save:hover { background: #151a21; }
+
+@media (max-width: 600px) {
+    .tm-grid { grid-template-columns: 1fr; }
+    .tm-modal { padding: 18px 16px; }
+    .tm-title { padding-right: 40px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- TOP AREA -->
+    <div class="topbar">
+
+        <div class="top-logo">
+            <img src="noted-logo-icon.png" alt="Noted logo">
+            <span>noted</span>
+        </div>
+
+        <div class="timer-box">
+            <div class="timer-title">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="13" r="8"/>
+                    <path d="M12 9v4l2 2M5 3L2 6M22 6l-3-3"/>
+                </svg>
+                <span id="timerLabel">Focus timer</span>
+                <span class="next" id="tNext"></span>
+            </div>
+            <div class="timer-row">
+                <div class="timer" id="timerDisplay" onclick="openTimerModal()">00:25:00</div>
+
+                <button class="play" id="playButton" onclick="startTimer()" aria-label="Start">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M10 8l6 4-6 4z" fill="currentColor"/>
+                    </svg>
+                </button>
+
+                <div class="timer-tools">
+                    <button class="play dark" id="resetBtn" type="button" title="Reset" aria-label="Reset"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g transform="translate(5.2 5.2) scale(.57)" stroke-width="3.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></g></svg></button>
+                    <button class="play" id="skipBtn" type="button" title="Skip" aria-label="Skip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.5 8.5l4.5 3.5-4.5 3.5z" fill="currentColor"/><path d="M16.5 8.5v7"/></svg></button>
+                    <button class="play dark" id="editBtn" type="button" title="Edit" aria-label="Edit" onclick="openTimerModal()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><g transform="translate(5.2 5.2) scale(.57)" stroke-width="3.2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></g></svg></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="content-area">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+
+            <div class="hello">Hello 👋</div>
+            <div class="username" id="usernameText">Angeline</div>
+
+            <button class="collapse-button" id="collapseBtn" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+
+            <nav class="menu">
+
+                <!-- Dashboard -->
+                <a href="index.html" class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="18" rx="1.5"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                    </svg>
+                    Dashboard
+                </a>
+
+                <!-- My Notes -->
+                <div class="menu-item notes-toggle active" onclick="toggleNotes()">
+                    <svg class="menu-icon" viewBox="0 0 24 24">
+                        <path d="M5 3h14a2 2 0 0 1 2 2v9l-7 7H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+                        <path d="M14 21v-5a2 2 0 0 1 2-2h5"/>
+                        <path d="M7 8h10M7 12h5"/>
+                    </svg>
+                    <span>My Notes</span>
+
+                    <!-- DOWN / UP ARROW PAIR -->
+                    <span class="arrow-wrap open" id="notesArrow">
+                        <svg class="arrow arrow-down" viewBox="0 0 24 24">
+                            <path d="M4 8l8 8 8-8"/>
+                        </svg>
+                        <svg class="arrow arrow-up" viewBox="0 0 24 24">
+                            <path d="M4 16l8-8 8 8"/>
+                        </svg>
+                    </span>
+
+                    <button
+                        type="button"
+                        class="add-button"
+                        onclick="event.stopPropagation(); showNewNote()"
+                        aria-label="Create a new note">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- NOTE LIST (filled in by JavaScript) -->
+                <div class="note-list open" id="noteList"></div>
+
+                <!-- Calendar -->
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24">
+                        <rect x="3" y="5" width="18" height="16" rx="2"/>
+                        <path d="M8 2v4M16 2v4M3 10h18"/>
+                    </svg>
+                    Calendar
+                </div>
+
+                <!-- Personalization -->
+                <div class="menu-item">
+                    <svg class="menu-icon" viewBox="0 0 24 24">
+                        <path d="M3 6h14M3 11h8M3 16h6"/>
+                        <path d="M13 19l1-4 7-7a1.4 1.4 0 0 1 2 2l-7 7-3 2z"/>
+                    </svg>
+                    Personalization
+                </div>
+
+            </nav>
+
+
+            <!-- PROFILE -->
+            <div class="profile">
+
+                <div class="profile-top">
+                    <div class="avatar" id="avatarText">A</div>
+                    <div>
+                        <div class="profile-name" id="profileName">Angeline Sanchez</div>
+                        <div class="email" id="profileEmail">angelineee@gmail.com</div>
+                    </div>
+                </div>
+
+                <div class="logout" onclick="openLogoutModal()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15 3h3a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-3"/>
+                        <path d="M3 12h11M10 8l4 4-4 4"/>
+                    </svg>
+                    Logout
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN NOTE -->
+        <main class="main">
+
+            <div class="note-content">
+
+                <!-- NORMAL NOTE -->
+                <div id="normalNote">
+
+                    <div class="note-actions" id="noteActions">
+
+                        <button class="annotate" onmousedown="event.preventDefault()" onclick="annotateSelection()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>
+                            </svg>
+                            Annotate
+                        </button>
+
+                    </div>
+
+                    <h1 class="note-title" id="noteTitle"></h1>
+
+                    <p class="note-text" id="noteText"></p>
+
+                </div>
+
+
+                <!-- CREATE / EDIT NOTE -->
+                <div class="new-note" id="newNote">
+
+                    <h1 class="note-title" id="formHeading">Create New Note</h1>
+
+                    <input type="text" id="newTitle" placeholder="Note title">
+
+                    <textarea id="newText" placeholder="Write your note here..."></textarea>
+
+                    <div class="form-actions">
+                        <button class="save-button" id="saveButton" onclick="saveNote()">Save Note</button>
+                        <button class="cancel-button" onclick="cancelForm()">Cancel</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<button type="button" class="selection-bubble" id="selectionBubble"
+        onmousedown="event.preventDefault()" onclick="annotateSelection()">
+    <svg viewBox="0 0 24 24"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+    Annotate
+</button>
+
+<div class="toast" id="toast"></div>
+
+<!-- THREE DOTS MENU -->
+<div class="dots-menu" id="dotsMenu">
+    <button type="button" onclick="menuEdit()">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>
+        </svg>
+        Edit
+    </button>
+    <button type="button" class="danger" onclick="menuDelete()">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v5M14 11v5"/>
+        </svg>
+        Delete
+    </button>
+</div>
+
+
+<!-- LOGOUT POPUP -->
+<div class="logout-modal" id="logoutModal">
+
+    <div class="logout-box">
+
+        <div class="logout-title">Logout?</div>
+
+        <div class="logout-message">You'll be signed out of this account.</div>
+
+        <div class="logout-actions">
+            <button class="stay-button" onclick="closeLogoutModal()">Stay signed in</button>
+            <button class="confirm-logout-button" onclick="confirmLogout()">Log out</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ANNOTATE POPUP -->
+<div class="annotate-modal" id="annotateModal">
+
+    <div class="logout-box" style="width: 330px; position: relative;">
+
+        <button type="button" class="annotate-close" onclick="closeAnnotateModal()" aria-label="Close">×</button>
+
+        <div class="logout-title" id="annotateTitle">Annotate</div>
+
+        <div class="annotate-quote" id="annotateQuote"></div>
+
+        <div class="annotate-comment-view" id="annotateView"></div>
+
+        <textarea class="annotate-input" id="annotateComment" placeholder="Add a comment (optional)"></textarea>
+
+        <!-- viewing an existing annotation -->
+        <div class="logout-actions" id="annotateViewActions">
+            <button class="stay-button remove-annotation-button" onclick="removeAnnotation()">Remove</button>
+            <button class="confirm-logout-button" onclick="startAnnotateEdit()">Edit</button>
+        </div>
+
+        <!-- writing or editing -->
+        <div class="logout-actions" id="annotateEditActions">
+            <button class="stay-button" onclick="cancelAnnotateEdit()">Cancel</button>
+            <button class="confirm-logout-button" onclick="saveAnnotation()">Save</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- DELETE NOTE POPUP -->
+<div class="delete-modal" id="deleteModal">
+
+    <div class="logout-box">
+
+        <div class="logout-title">Delete note?</div>
+
+        <div class="logout-message" id="deleteMessage"></div>
+
+        <div class="logout-actions">
+            <button class="stay-button" onclick="closeDeleteModal()">Cancel</button>
+            <button class="confirm-logout-button confirm-delete-button" onclick="confirmDelete()">Delete</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- TIMER POPUP -->
+<div class="timer-modal" id="timerModal">
+    <div class="tm-modal" role="dialog" aria-modal="true" aria-labelledby="tmTitle">
+        <button class="tm-close" onclick="closeTimerModal()" aria-label="Close">&times;</button>
+        <h1 class="tm-title" id="tmTitle">Session Timer</h1>
+        <p class="tm-sub">Configure duration and rules for focus mode</p>
+
+        <div class="tm-dial" aria-live="polite">
+            <div class="tm-dial-time" id="dialTime">25:00</div>
+            <div class="tm-dial-tag">SET TARGET</div>
+        </div>
+
+        <h2 class="tm-h2">Pomodoro</h2>
+        <p class="tm-desc" id="tmDesc">Work in focused 25-minute blocks with 5-minute breaks.</p>
+
+        <div class="tm-grid">
+            <div class="tm-card">
+                <div class="tm-label">POMODORO DURATION</div>
+                <div class="tm-stepper">
+                    <button class="tm-btn" data-key="focus" data-step="-1" aria-label="Decrease Pomodoro duration">&minus;</button>
+                    <span class="tm-val" id="focusVal">25</span>
+                    <button class="tm-btn" data-key="focus" data-step="1" aria-label="Increase Pomodoro duration">+</button>
+                    <span class="tm-unit">min</span>
+                </div>
+            </div>
+
+            <div class="tm-card">
+                <div class="tm-label">SHORT BREAK</div>
+                <div class="tm-stepper">
+                    <button class="tm-btn" data-key="brk" data-step="-1" aria-label="Decrease short break">&minus;</button>
+                    <span class="tm-val" id="brkVal">5</span>
+                    <button class="tm-btn" data-key="brk" data-step="1" aria-label="Increase short break">+</button>
+                    <span class="tm-unit">min</span>
+                </div>
+            </div>
+
+            <div class="tm-card tm-toggle">
+                <div class="tm-toggle-text">
+                    <div class="tm-name">Auto Start Pomodoros</div>
+                    <div class="tm-hint">Automatically start the next Pomodoro after a break.</div>
+                </div>
+                <label class="tm-switch">
+                    <input type="checkbox" id="autoFocus" aria-label="Auto start Pomodoros">
+                    <span class="tm-track"></span>
+                </label>
+            </div>
+
+            <div class="tm-card tm-toggle">
+                <div class="tm-toggle-text">
+                    <div class="tm-name">Auto Start Breaks</div>
+                    <div class="tm-hint">Automatically start the break when a Pomodoro ends.</div>
+                </div>
+                <label class="tm-switch">
+                    <input type="checkbox" id="autoBreak" aria-label="Auto start breaks">
+                    <span class="tm-track"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="tm-actions">
+            <button class="tm-cancel" onclick="closeTimerModal()">Cancel</button>
+            <button class="tm-save" onclick="saveTimer()">Save Timer</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+/* ========== ACCOUNT (same code as the dashboard) ========== */
+
+/* The login page should save who signed in, e.g.
+   localStorage.setItem("notedCurrentUser", JSON.stringify({ name: "Juan Dela Cruz", email: "juan@gmail.com" })); */
+const USER_KEY = "notedCurrentUser";
+const DEFAULT_ACCOUNT = { name: "Angeline Sanchez", email: "angelineee@gmail.com" };
+
+function getAccount() {
+    try {
+        const u = JSON.parse(localStorage.getItem(USER_KEY));
+        if (u && u.email) return u;
+    } catch (e) {}
+    return DEFAULT_ACCOUNT;
+}
+
+const ACCOUNT = getAccount();
+
+/* show the logged-in account in the sidebar */
+document.getElementById("usernameText").textContent = ACCOUNT.name.split(" ")[0];
+document.getElementById("avatarText").textContent = ACCOUNT.name.charAt(0).toUpperCase();
+document.getElementById("profileName").textContent = ACCOUNT.name;
+document.getElementById("profileEmail").textContent = ACCOUNT.email;
+
+
+/* SHARED NOTE STORAGE (the dashboard reads the same key) */
+const STORAGE_KEY = "notedNotes";
+
+const DEFAULT_NOTES = [
+    { title: "Sample notes", text: "These are your sample notes.", created: Date.now() - 15 * 60000 },
+    { title: "Meeting recap and action items", text: "Recap of the meeting and the action items.", created: Date.now() - 30 * 60000 },
+    { title: "Client feedback on project draft", text: "Feedback from the client on the project draft.", created: Date.now() - 120 * 60000 }
+];
+
+function saveNotes(list) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {}
+}
+
+function loadNotes() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    saveNotes(DEFAULT_NOTES);
+    return DEFAULT_NOTES.slice();
+}
+
+let notes = loadNotes();
+
+let currentIndex = -1;   // which note is being viewed
+let editingIndex = -1;   // -1 = creating a new note, otherwise editing that note
+let deleteIndex = -1;    // which note the delete popup is about
+
+
+/* SIDEBAR NOTE LIST */
+function renderNoteList() {
+    const list = document.getElementById("noteList");
+    list.innerHTML = "";
+
+    notes.forEach(function (n, index) {
+        const item = document.createElement("div");
+        item.className = "note-item" + (index === currentIndex ? " active" : "");
+
+        const label = document.createElement("span");
+        label.textContent = n.title;
+
+        const dots = document.createElement("span");
+        dots.className = "dots";
+        dots.textContent = "⋮";
+        dots.title = "More options";
+
+        // three dots open the Edit / Delete menu (and don't open the note)
+        dots.onclick = function (event) {
+            event.stopPropagation();
+            openDotsMenu(index, dots);
+        };
+
+        item.appendChild(label);
+        item.appendChild(dots);
+
+        item.onclick = function () {
+            showNote(index);
+        };
+
+        list.appendChild(item);
+    });
+}
+
+
+/* HIDE / SHOW MY NOTES (swaps the down/up arrow pair) */
+function toggleNotes() {
+    const list = document.getElementById("noteList");
+    const arrow = document.getElementById("notesArrow");
+
+    list.classList.toggle("open");
+    arrow.classList.toggle("open", list.classList.contains("open"));
+}
+
+
+/* OPEN THE FORM (create or edit) */
+function openForm(index) {
+    editingIndex = index;
+
+    document.getElementById("normalNote").style.display = "none";
+    document.getElementById("newNote").style.display = "block";
+
+    if (index === -1) {
+        document.getElementById("formHeading").textContent = "Create New Note";
+        document.getElementById("saveButton").textContent = "Save Note";
+        document.getElementById("newTitle").value = "";
+        document.getElementById("newText").value = "";
+    } else {
+        document.getElementById("formHeading").textContent = "Edit Note";
+        document.getElementById("saveButton").textContent = "Save Changes";
+        document.getElementById("newTitle").value = notes[index].title;
+        document.getElementById("newText").value = notes[index].text || "";
+    }
+
+    document.getElementById("newTitle").focus();
+
+    // make sure the list is visible
+    document.getElementById("noteList").classList.add("open");
+    document.getElementById("notesArrow").classList.add("open");
+}
+
+function showNewNote() {
+    openForm(-1);
+}
+
+/* THREE DOTS MENU */
+let menuIndex = -1;
+
+function openDotsMenu(index, anchor) {
+    const menu = document.getElementById("dotsMenu");
+
+    // clicking the same dots again closes the menu
+    if (menu.classList.contains("open") && menuIndex === index) {
+        closeDotsMenu();
+        return;
+    }
+
+    menuIndex = index;
+    menu.classList.add("open");
+
+    const rect = anchor.getBoundingClientRect();
+    const menuWidth = menu.offsetWidth;
+    const menuHeight = menu.offsetHeight;
+
+    let left = rect.left;
+    let top = rect.bottom + 4;
+
+    if (left + menuWidth > window.innerWidth - 8) left = window.innerWidth - menuWidth - 8;
+    if (top + menuHeight > window.innerHeight - 8) top = rect.top - menuHeight - 4;
+
+    menu.style.left = left + "px";
+    menu.style.top = top + "px";
+}
+
+function closeDotsMenu() {
+    document.getElementById("dotsMenu").classList.remove("open");
+}
+
+function menuEdit() {
+    const index = menuIndex;
+    closeDotsMenu();
+
+    if (index >= 0 && index < notes.length) {
+        currentIndex = index;
+        renderNoteList();
+        openForm(index);
+    }
+}
+
+function menuDelete() {
+    const index = menuIndex;
+    closeDotsMenu();
+
+    if (index >= 0 && index < notes.length) {
+        openDeleteModal(index);
+    }
+}
+
+function cancelForm() {
+    if (currentIndex >= 0 && currentIndex < notes.length) {
+        showNote(currentIndex);
+    } else {
+        showEmptyState();
+    }
+}
+
+
+/* SAVE NOTE (new or edited) */
+function saveNote() {
+    const title = document.getElementById("newTitle").value.trim();
+    const text = document.getElementById("newText").value;
+
+    if (title === "") {
+        alert("Please enter a note title.");
+        return;
+    }
+
+    if (editingIndex === -1) {
+        notes.unshift({ title: title, text: text, created: Date.now() });
+        saveNotes(notes);
+        showNote(0);
+    } else {
+        notes[editingIndex].title = title;
+        notes[editingIndex].text = text;
+        notes[editingIndex].annotations = validAnnotations(notes[editingIndex]).map(function (item) {
+            return item.ann;
+        });
+        saveNotes(notes);
+        showNote(editingIndex);
+    }
+}
+
+
+/* SHOW NOTE */
+function showNote(index) {
+    lastSelection = null;
+    currentIndex = index;
+    editingIndex = -1;
+
+    document.getElementById("normalNote").style.display = "block";
+    document.getElementById("newNote").style.display = "none";
+    document.getElementById("noteActions").style.display = "flex";
+
+    document.getElementById("noteTitle").textContent = notes[index].title;
+    renderNoteText(index);
+
+    renderNoteList();
+}
+
+function showEmptyState() {
+    currentIndex = -1;
+    editingIndex = -1;
+
+    document.getElementById("normalNote").style.display = "block";
+    document.getElementById("newNote").style.display = "none";
+    document.getElementById("noteActions").style.display = "none";
+
+    document.getElementById("noteTitle").textContent = "No notes yet";
+    document.getElementById("noteText").textContent = "Click the + button to create your first note.";
+
+    renderNoteList();
+}
+
+
+/* ANNOTATIONS (highlight text + optional comment) */
+let annotateState = { annIndex: -1, pending: null };
+
+function validAnnotations(note) {
+    const text = note.text || "";
+    const result = [];
+
+    (note.annotations || []).forEach(function (a, i) {
+        if (text.slice(a.start, a.end) === a.quote) {
+            result.push({ ann: a, index: i });
+        }
+    });
+
+    result.sort(function (a, b) { return a.ann.start - b.ann.start; });
+    return result;
+}
+
+function renderNoteText(index) {
+    const note = notes[index];
+    const p = document.getElementById("noteText");
+    const text = note.text || "";
+
+    p.innerHTML = "";
+
+    if (!text) {
+        p.textContent = "No content added.";
+        return;
+    }
+
+    let position = 0;
+
+    validAnnotations(note).forEach(function (item) {
+        const a = item.ann;
+
+        if (a.start < position) return;
+
+        if (a.start > position) {
+            p.appendChild(document.createTextNode(text.slice(position, a.start)));
+        }
+
+        const mark = document.createElement("span");
+        mark.className = "highlight" + (a.comment ? " has-comment" : "");
+        mark.textContent = text.slice(a.start, a.end);
+        mark.title = a.comment ? a.comment : "Click to add a comment";
+        mark.onclick = function () {
+            openAnnotateModal(item.index, null);
+        };
+        p.appendChild(mark);
+
+        position = a.end;
+    });
+
+    if (position < text.length) {
+        p.appendChild(document.createTextNode(text.slice(position)));
+    }
+}
+
+/* remember the last text selected inside the note (touch screens and some
+   browsers clear the selection when a button is tapped) */
+let lastSelection = null;
+
+function getSelectionInfo() {
+    const p = document.getElementById("noteText");
+    const sel = window.getSelection();
+
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+
+    const range = sel.getRangeAt(0);
+    if (!p.contains(range.commonAncestorContainer)) return null;
+
+    const quote = range.toString();
+    if (quote.trim() === "") return null;
+
+    const before = document.createRange();
+    before.selectNodeContents(p);
+    before.setEnd(range.startContainer, range.startOffset);
+
+    const start = before.toString().length;
+    return { start: start, end: start + quote.length, quote: quote };
+}
+
+/* small Annotate button that pops up on the side of the selected text */
+function updateBubble() {
+    const bubble = document.getElementById("selectionBubble");
+    const info = getSelectionInfo();
+
+    if (!info || document.getElementById("annotateModal").style.display === "flex") {
+        bubble.classList.remove("show");
+        return;
+    }
+
+    const range = window.getSelection().getRangeAt(0);
+    const rects = range.getClientRects();
+    const last = rects.length ? rects[rects.length - 1] : range.getBoundingClientRect();
+
+    bubble.classList.add("show");
+
+    const width = bubble.offsetWidth;
+    const height = bubble.offsetHeight;
+
+    // on the right side of the selection, just above its line so it doesn't cover the next words
+    let left = last.right + 6;
+    let top = last.top - height + 2;
+
+    // no room on the right: keep it inside the screen
+    if (left + width > window.innerWidth - 8) {
+        left = Math.max(8, window.innerWidth - width - 8);
+    }
+
+    bubble.style.left = left + "px";
+    bubble.style.top = top + "px";
+}
+
+document.addEventListener("selectionchange", function () {
+    const info = getSelectionInfo();
+    if (info) lastSelection = info;
+    updateBubble();
+});
+
+window.addEventListener("resize", updateBubble);
+
+function forgetSelection(event) {
+    if (!event.target.closest || !event.target.closest(".annotate")) lastSelection = null;
+}
+
+document.addEventListener("mousedown", forgetSelection);
+document.addEventListener("touchstart", forgetSelection);
+
+let toastTimer;
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+        toast.classList.remove("show");
+    }, 2800);
+}
+
+function annotateSelection() {
+    if (currentIndex < 0 || currentIndex >= notes.length) {
+        showToast("Open a note first.");
+        return;
+    }
+
+    const info = getSelectionInfo() || lastSelection;
+
+    if (!info) {
+        showToast("Select some text in the note first, then click Annotate.");
+        return;
+    }
+
+    const overlaps = validAnnotations(notes[currentIndex]).some(function (item) {
+        return info.start < item.ann.end && item.ann.start < info.end;
+    });
+
+    if (overlaps) {
+        showToast("That part is already highlighted. Click the highlight to edit it.");
+        return;
+    }
+
+    lastSelection = null;
+    window.getSelection().removeAllRanges();
+    document.getElementById("selectionBubble").classList.remove("show");
+    openAnnotateModal(-1, info);
+}
+
+function openAnnotateModal(annIndex, pending) {
+    annotateState = { annIndex: annIndex, pending: pending };
+
+    const existing = annIndex >= 0 ? notes[currentIndex].annotations[annIndex] : null;
+
+    document.getElementById("annotateQuote").textContent = existing ? existing.quote : pending.quote;
+    document.getElementById("annotateModal").style.display = "flex";
+
+    if (existing) {
+        // an existing annotation opens in view mode: press Edit to change it
+        setAnnotateMode("view");
+    } else {
+        // a new annotation goes straight to writing
+        setAnnotateMode("new");
+    }
+}
+
+function setAnnotateMode(mode) {
+    const existing = annotateState.annIndex >= 0 ? notes[currentIndex].annotations[annotateState.annIndex] : null;
+    const view = document.getElementById("annotateView");
+    const input = document.getElementById("annotateComment");
+    const viewing = mode === "view";
+
+    document.getElementById("annotateTitle").textContent =
+        mode === "view" ? "Annotation" : (mode === "edit" ? "Edit annotation" : "Annotate");
+
+    view.style.display = viewing ? "block" : "none";
+    input.style.display = viewing ? "none" : "block";
+    document.getElementById("annotateViewActions").style.display = viewing ? "flex" : "none";
+    document.getElementById("annotateEditActions").style.display = viewing ? "none" : "flex";
+
+    if (viewing) {
+        const comment = existing && existing.comment ? existing.comment : "";
+        view.textContent = comment || "No comment added.";
+        view.classList.toggle("empty", !comment);
+    } else {
+        input.value = existing ? (existing.comment || "") : "";
+        input.focus();
+    }
+}
+
+function startAnnotateEdit() {
+    setAnnotateMode("edit");
+}
+
+function cancelAnnotateEdit() {
+    if (annotateState.annIndex >= 0) {
+        setAnnotateMode("view");
+    } else {
+        closeAnnotateModal();
+    }
+}
+
+function closeAnnotateModal() {
+    document.getElementById("annotateModal").style.display = "none";
+}
+
+function saveAnnotation() {
+    const note = notes[currentIndex];
+    const comment = document.getElementById("annotateComment").value.trim();
+
+    if (!note.annotations) note.annotations = [];
+
+    if (annotateState.annIndex >= 0) {
+        note.annotations[annotateState.annIndex].comment = comment;
+    } else {
+        note.annotations.push({
+            start: annotateState.pending.start,
+            end: annotateState.pending.end,
+            quote: annotateState.pending.quote,
+            comment: comment
+        });
+    }
+
+    saveNotes(notes);
+    closeAnnotateModal();
+    renderNoteText(currentIndex);
+}
+
+function removeAnnotation() {
+    if (annotateState.annIndex >= 0) {
+        notes[currentIndex].annotations.splice(annotateState.annIndex, 1);
+        saveNotes(notes);
+    }
+
+    closeAnnotateModal();
+    renderNoteText(currentIndex);
+}
+
+
+/* DELETE POPUP */
+function openDeleteModal(index) {
+    deleteIndex = index;
+
+    const message = document.getElementById("deleteMessage");
+    message.innerHTML = "";
+    message.appendChild(document.createTextNode("You're about to delete "));
+
+    const bold = document.createElement("strong");
+    bold.textContent = notes[index].title;
+    message.appendChild(bold);
+
+    message.appendChild(document.createTextNode(". This can't be undone."));
+
+    document.getElementById("deleteModal").style.display = "flex";
+}
+
+function closeDeleteModal() {
+    document.getElementById("deleteModal").style.display = "none";
+    deleteIndex = -1;
+}
+
+function confirmDelete() {
+    if (deleteIndex < 0 || deleteIndex >= notes.length) {
+        closeDeleteModal();
+        return;
+    }
+
+    const removed = deleteIndex;
+    notes.splice(removed, 1);
+    saveNotes(notes);
+    closeDeleteModal();
+
+    // keep the form open if the user is in the middle of creating a note
+    const formOpen = document.getElementById("newNote").style.display === "block";
+
+    if (formOpen && editingIndex === -1) {
+        if (currentIndex === removed) currentIndex = -1;
+        else if (currentIndex > removed) currentIndex--;
+        renderNoteList();
+        return;
+    }
+
+    if (notes.length === 0) {
+        showEmptyState();
+    } else if (currentIndex === removed) {
+        showNote(Math.min(removed, notes.length - 1));
+    } else {
+        if (currentIndex > removed) currentIndex--;
+        showNote(currentIndex);
+    }
+}
+
+
+/* SIDEBAR COLLAPSE (arrow next to the name) */
+function setSidebar(collapsed) {
+    document.getElementById("sidebar").classList.toggle("collapsed", collapsed);
+    const btn = document.getElementById("collapseBtn");
+    const label = collapsed ? "Expand sidebar" : "Collapse sidebar";
+    btn.title = label;
+    btn.setAttribute("aria-label", label);
+    closeDotsMenu();
+    try { localStorage.setItem("notedSidebarCollapsed", collapsed ? "1" : "0"); } catch (e) {}
+}
+
+function toggleSidebar() {
+    setSidebar(!document.getElementById("sidebar").classList.contains("collapsed"));
+}
+
+try {
+    if (localStorage.getItem("notedSidebarCollapsed") === "1") setSidebar(true);
+} catch (e) {}
+
+
+/* LOGOUT */
+function openLogoutModal() {
+    document.getElementById("logoutModal").style.display = "flex";
+}
+
+function closeLogoutModal() {
+    document.getElementById("logoutModal").style.display = "none";
+}
+
+function confirmLogout() {
+    closeLogoutModal();
+    alert("You have been logged out.");
+}
+
+
+/* CLOSE THE DOTS MENU */
+document.addEventListener("click", function (event) {
+    if (!event.target.closest("#dotsMenu")) closeDotsMenu();
+});
+
+document.getElementById("noteList").addEventListener("scroll", closeDotsMenu);
+window.addEventListener("resize", closeDotsMenu);
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closeDotsMenu();
+});
+
+
+/* CLOSE POPUPS BY CLICKING OUTSIDE */
+document.getElementById("annotateModal").addEventListener("click", function (event) {
+    if (event.target === this) closeAnnotateModal();
+});
+
+document.getElementById("deleteModal").addEventListener("click", function (event) {
+    if (event.target === this) closeDeleteModal();
+});
+
+document.getElementById("logoutModal").addEventListener("click", function (event) {
+    if (event.target === this) closeLogoutModal();
+});
+
+document.getElementById("timerModal").addEventListener("click", function (event) {
+    if (event.target === this) closeTimerModal();
+});
+
+
+/* ========== TIMER (copied from the dashboard) ========== */
+
+const LIMITS = { focus: { min: 1, max: 120 }, brk: { min: 1, max: 60 } };
+const DEFAULTS = { focus: 25, brk: 5, autoFocus: true, autoBreak: true };
+const STORE_KEY = "sessionTimerSettings";   // same key as the dashboard
+const STATE_KEY = "notedTimerState";        // running timer, shared by every page
+
+/* each account has its own points, e.g. "notedPoints:angelineee@gmail.com"
+   (must match the dashboard exactly) */
+const POINTS_KEY = "notedPoints:" + ACCOUNT.email.toLowerCase();
+const START_POINTS = 0;                // new accounts start with 0 points
+
+function getPoints() {
+    try {
+        const v = parseInt(localStorage.getItem(POINTS_KEY), 10);
+        return isNaN(v) ? START_POINTS : v;
+    } catch (e) {
+        return START_POINTS;
+    }
+}
+
+/* +1 point for every finished Pomodoro */
+function addPoint() {
+    const n = getPoints() + 1;
+    try { localStorage.setItem(POINTS_KEY, String(n)); } catch (e) {}
+    return n;
+}
+
+const $ = (id) => document.getElementById(id);
+const pad = (n) => String(n).padStart(2, "0");
+
+const PLAY_ICON =
+    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>';
+const PAUSE_ICON =
+    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M10 9v6M14 9v6"/></svg>';
+
+function loadTimerSettings() {
+    try {
+        return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(STORE_KEY) || "{}") };
+    } catch (e) {
+        return { ...DEFAULTS };
+    }
+}
+
+let saved = loadTimerSettings();
+let draft = { ...saved };
+
+/* popup */
+
+function renderModal() {
+    $("focusVal").textContent = draft.focus;
+    $("brkVal").textContent = draft.brk;
+    $("dialTime").textContent = pad(draft.focus) + ":00";
+    $("tmDesc").textContent =
+        "Work in focused " + draft.focus + "-minute blocks with " + draft.brk + "-minute breaks.";
+    $("autoFocus").checked = draft.autoFocus;
+    $("autoBreak").checked = draft.autoBreak;
+
+    document.querySelectorAll(".tm-stepper .tm-btn").forEach(function (b) {
+        const lim = LIMITS[b.dataset.key];
+        const next = draft[b.dataset.key] + Number(b.dataset.step);
+        b.disabled = next < lim.min || next > lim.max;
+    });
+}
+
+/* + / - buttons (hold to repeat) */
+document.querySelectorAll(".tm-stepper .tm-btn").forEach(function (btn) {
+    let t;
+    const stop = function () { clearTimeout(t); };
+    const step = function () {
+        const lim = LIMITS[btn.dataset.key];
+        const next = draft[btn.dataset.key] + Number(btn.dataset.step);
+        if (next >= lim.min && next <= lim.max) {
+            draft[btn.dataset.key] = next;
+            renderModal();
+        } else {
+            stop();
+        }
+    };
+    btn.addEventListener("pointerdown", function (e) {
+        if (e.button > 0) return;
+        step();
+        t = setTimeout(function loop() { step(); t = setTimeout(loop, 80); }, 400);
+    });
+    ["pointerup", "pointerleave", "pointercancel"].forEach(function (ev) {
+        btn.addEventListener(ev, stop);
+    });
+    btn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); step(); }
+    });
+});
+
+$("autoFocus").addEventListener("change", function (e) { draft.autoFocus = e.target.checked; });
+$("autoBreak").addEventListener("change", function (e) { draft.autoBreak = e.target.checked; });
+
+function openTimerModal() {
+    draft = { ...saved };
+    renderModal();
+    $("timerModal").style.display = "flex";
+}
+
+function closeTimerModal() {
+    $("timerModal").style.display = "none";
+}
+
+function saveTimer() {
+    saved = { ...draft };
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch (e) {}
+    closeTimerModal();
+    applySettings();
+    showToast("Timer saved: " + saved.focus + " min focus, " + saved.brk + " min break");
+}
+
+/* timer logic */
+
+const T = { mode: "focus", remaining: saved.focus * 60, running: false, endAt: 0, id: null };
+const totalSecs = function () { return (T.mode === "focus" ? saved.focus : saved.brk) * 60; };
+
+function drawTimer() {
+    const h = Math.floor(T.remaining / 3600);
+    const m = Math.floor((T.remaining % 3600) / 60);
+    const s = T.remaining % 60;
+
+    $("timerDisplay").textContent = pad(h) + ":" + pad(m) + ":" + pad(s);
+    $("timerLabel").textContent = T.mode === "focus" ? "Focus timer" : "Break timer";
+    $("playButton").innerHTML = T.running ? PAUSE_ICON : PLAY_ICON;
+
+    const isFocus = T.mode === "focus";
+    const auto = isFocus ? saved.autoBreak : saved.autoFocus;
+    const BOLT = '<svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
+    const HAND = '<svg viewBox="0 0 24 24"><path d="M5 3l14 7-6 2-2 6z"/></svg>';
+    const nextEl = $("tNext");
+    nextEl.className = "next " + (auto ? "auto" : "manual");
+    nextEl.title = auto ? "Starts by itself when this session ends" : "Waits for you to press play";
+    nextEl.innerHTML = (auto ? BOLT : HAND) + "<small>Next " + (isFocus ? "break" : "Pomodoro") + "</small> " + (auto ? "Auto" : "Manual");
+
+    saveTimerState();
+}
+
+/* keep the running timer when you change page */
+function saveTimerState() {
+    try {
+        localStorage.setItem(STATE_KEY, JSON.stringify({
+            mode: T.mode, remaining: T.remaining, running: T.running, endAt: T.endAt
+        }));
+    } catch (e) {}
+}
+
+function restoreTimerState() {
+    let st = null;
+    try { st = JSON.parse(localStorage.getItem(STATE_KEY)); } catch (e) {}
+    if (!st) return;
+
+    T.mode = st.mode === "break" ? "break" : "focus";
+
+    if (st.running) {
+        const left = Math.round((st.endAt - Date.now()) / 1000);
+        if (left > 0) {
+            T.remaining = left;
+            startTimerRun();          // carries on from the real time left
+            return;
+        }
+        // it ran out while you were on another page
+        if (T.mode === "focus") addPoint();
+        T.mode = T.mode === "focus" ? "break" : "focus";
+        T.remaining = totalSecs();
+        const auto = T.mode === "break" ? saved.autoBreak : saved.autoFocus;
+        if (auto) startTimerRun();
+        return;
+    }
+
+    T.remaining = Math.min(Math.max(0, Number(st.remaining) || 0), totalSecs());
+}
+
+$("resetBtn").addEventListener("click", function () {
+    pauseTimer();
+    T.remaining = totalSecs();
+    drawTimer();
+});
+
+$("skipBtn").addEventListener("click", function () {
+    pauseTimer();
+    T.mode = T.mode === "focus" ? "break" : "focus";
+    T.remaining = totalSecs();
+    drawTimer();
+});
+
+function beep() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .6);
+        osc.start();
+        osc.stop(ctx.currentTime + .6);
+    } catch (e) {}
+}
+
+function startTimerRun() {
+    if (T.running) return;
+    T.endAt = Date.now() + T.remaining * 1000;
+    T.running = true;
+    T.id = setInterval(tick, 250);
+    drawTimer();
+}
+
+function pauseTimer() {
+    if (!T.running) return;
+    clearInterval(T.id);
+    T.running = false;
+    drawTimer();
+}
+
+/* the play button calls this */
+function startTimer() {
+    if (T.running) pauseTimer();
+    else startTimerRun();
+}
+
+function tick() {
+    const left = Math.max(0, Math.round((T.endAt - Date.now()) / 1000));
+    if (left !== T.remaining) {
+        T.remaining = left;
+        drawTimer();
+    }
+    if (left <= 0) finish();
+}
+
+/* reached 00:00 -> follow the auto-start rules */
+function finish() {
+    const was = T.mode;
+    pauseTimer();
+    beep();
+    T.mode = was === "focus" ? "break" : "focus";
+    T.remaining = totalSecs();
+    const auto = T.mode === "break" ? saved.autoBreak : saved.autoFocus;
+    drawTimer();
+    if (was === "focus") {
+        addPoint();
+        showToast("Pomodoro complete: +1 point");
+    } else {
+        showToast("Break over");
+    }
+    if (auto) startTimerRun();
+}
+
+function applySettings() {
+    pauseTimer();
+    T.mode = "focus";
+    T.remaining = totalSecs();
+    drawTimer();
+}
+
+restoreTimerState();
+drawTimer();
+
+
+/* START (one place that decides what the page opens) */
+function startPage() {
+    const hash = window.location.hash;
+
+    // 1. "Create note" button from the dashboard
+    if (hash === "#create-note") {
+        if (notes.length > 0) {
+            showNote(0);      // fill the sidebar and keep a note behind the form
+        }
+        showNewNote();
+        return;
+    }
+
+    // 2. a specific note was clicked on the dashboard
+    const match = hash.match(/^#open-note-(\d+)$/);
+    if (match) {
+        const created = Number(match[1]);
+        const index = notes.findIndex(function (n) {
+            return n.created === created;
+        });
+
+        if (index >= 0) {
+            showNote(index);
+            return;
+        }
+    }
+
+    // 3. opened normally: first note, or the empty state
+    if (notes.length > 0) {
+        showNote(0);
+    } else {
+        showEmptyState();
+    }
+}
+
+startPage();
+
+</script>
+
+</body>
+</html>

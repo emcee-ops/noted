@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noted! – Onboarding</title>
+<style>
+  :root {
+    --bg: #e8ebee;
+    --card: #ffffff;
+    --field: #e1e4e7;
+    --line: #c9cdd2;
+    --ink: #111315;
+    --muted: #70767d;
+    --dark: #22262b;
+    --accent: #3b2a00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+  button, input { font: inherit; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: flex; }
+
+  /* ---------- Auth screens ---------- */
+  .auth { gap: 24px; padding: 24px; }
+  .auth-form { flex: 1; display: flex; align-items: center; justify-content: center; }
+  .form-box { width: 100%; max-width: 340px; text-align: center; }
+  .logo {
+    width: 48px; height: 48px; margin: 0 auto 12px; border-radius: 12px;
+    background: var(--card); display: grid; place-items: center;
+    font-weight: 700; font-size: 22px; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  h1 { font-size: 22px; font-weight: 700; }
+  h1 i, h2 i { font-style: italic; }
+  .sub { font-size: 12px; color: var(--muted); margin: 6px 0 20px; }
+  .btn-google {
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); font-weight: 600; font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .or {
+    display: flex; align-items: center; gap: 10px; margin: 16px 0;
+    font-size: 12px; font-weight: 600;
+  }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .field { text-align: left; margin-bottom: 14px; }
+  .field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .field label { font-size: 12px; font-weight: 700; }
+  .field .req { color: #c0392b; }
+  .field a { font-size: 12px; color: var(--muted); text-decoration: none; }
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--field); font-size: 13px; color: var(--ink);
+  }
+  .input-wrap input::placeholder { color: #8a9097; }
+  .eye {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; cursor: pointer; font-size: 14px; color: var(--ink);
+  }
+  .btn-primary {
+    width: 100%; padding: 12px; margin-top: 6px; border: 0; border-radius: 8px;
+    background: var(--dark); color: #fff; font-weight: 600; font-size: 13px; cursor: pointer;
+  }
+  .switch { margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .switch a { color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; }
+  .error { color: #c0392b; font-size: 11px; margin-top: 4px; min-height: 14px; text-align: left; }
+
+  .promo {
+    flex: 1.1; background: var(--card); border-radius: 16px; padding: 32px;
+    display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  }
+  .promo h2 { font-size: 18px; font-weight: 700; margin-top: 16px; }
+  .promo-illustration { position: relative; width: 100%; max-width: 500px; height: 280px; }
+  .promo-illustration div { position: absolute; background: #f4f6f8; border: 4px solid #e4e7ea; border-radius: 8px; }
+  .m-app { left: 0; top: 30px; width: 60%; height: 170px; }
+  .m-timer { right: 0; top: 0; width: 34%; height: 44px; background: #fff !important; }
+  .m-note { right: 0; top: 70px; width: 50%; height: 120px; background: #fff !important; }
+  .m-cal { left: 4%; bottom: 0; width: 58%; height: 100px; background: #fff !important; }
+  .promo p { font-size: 11px; color: var(--muted); }
+
+  /* ---------- Onboarding ---------- */
+  .onboard { flex-direction: column; align-items: center; padding: 56px 24px; text-align: center; }
+  .onboard h1 { font-size: 20px; }
+  .onboard .sub { max-width: 260px; margin: 8px auto 14px; }
+  .progress { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+  .progress span { width: 36px; height: 3px; border-radius: 2px; background: #c3c8cd; }
+  .progress span.on { background: #5b6168; }
+  .divider { width: 100%; max-width: 480px; height: 1px; background: var(--line); margin-bottom: 36px; }
+  .btn-next {
+    padding: 8px 18px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 28px;
+  }
+  .btn-next:hover { background: #dde1e5; }
+
+  .avatar {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 32px; display: grid; place-items: center; margin: 0 auto 6px;
+  }
+  .change { font-size: 11px; color: var(--muted); background: none; border: 0; cursor: pointer; margin-bottom: 24px; }
+  .name-row { display: flex; gap: 40px; justify-content: center; }
+  .name-row label { display: block; font-size: 11px; color: var(--muted); text-align: left; margin-bottom: 4px; }
+  .name-row input {
+    width: 120px; border: 0; background: transparent; font-size: 12px;
+    border-bottom: 1px solid transparent; padding: 2px 0;
+  }
+  .name-row input:focus { border-bottom-color: var(--ink); outline: none; }
+
+  .options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .option {
+    width: 98px; height: 92px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--field); color: var(--muted); font-size: 11px; font-weight: 700;
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  }
+  .option .ico { font-size: 20px; }
+  .option.selected { border: 1.5px solid #5b6168; color: var(--ink); }
+
+  .welcome-card {
+    background: #f7f9fb; border-radius: 10px; padding: 16px 20px; text-align: left;
+    width: 300px; box-shadow: 0 2px 10px rgba(0,0,0,.15);
+  }
+  .welcome-card .tag { display: inline-block; font-size: 8px; padding: 3px 6px; border-radius: 4px; background: #fff; border: 1px solid var(--line); margin-bottom: 8px; }
+  .welcome-card h2 { font-size: 16px; margin-bottom: 8px; }
+  .welcome-card p { font-size: 9px; line-height: 1.5; }
+
+  @media (max-width: 860px) {
+    .promo { display: none; }
+    .auth { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOG IN / SIGN UP -->
+<section class="screen auth active" id="auth">
+  <div class="auth-form">
+    <div class="form-box">
+      <div class="logo">N</div>
+      <h1>Welcome to Noted<i>!</i></h1>
+      <p class="sub">Sign in or Sign Up if you don't have an account yet.</p>
+
+      <button class="btn-google" type="button">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.600l-7.500-5.800c-2 1.400-4.700 2.300-7.700 2.300-6.300 0-11.700-4.100-13.600-9.800l-7.800 6.100C6.500 42.600 14.600 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="or">OR</div>
+
+      <form id="authForm" novalidate>
+        <div class="field">
+          <div class="row"><label for="email">Email address <span class="req signup-only" hidden>*</span></label></div>
+          <div class="input-wrap"><input id="email" type="email" placeholder="user@gmail.com" autocomplete="email"></div>
+          <div class="error" id="emailErr"></div>
+        </div>
+
+        <div class="field">
+          <div class="row">
+            <label for="pw">Password <span class="req signup-only" hidden>*</span></label>
+            <a href="#" class="login-only">Forgot Your Password?</a>
+          </div>
+          <div class="input-wrap">
+            <input id="pw" type="password" placeholder="enter your password" autocomplete="current-password">
+            <button type="button" class="eye" data-target="pw" aria-label="Show password">👁</button>
+          </div>
+          <div class="error" id="pwErr"></div>
+        </div>
+
+        <div class="field signup-only" hidden>
+          <div class="row"><label for="pw2">Confirm Password <span class="req">*</span></label></div>
+          <div class="input-wrap">
+            <input id="pw2" type="password" placeholder="enter your password again" autocomplete="new-password">
+            <button type="button" class="eye" data-target="pw2" aria-label="Show password">👁</button>
+          </div>
+          <div class="error" id="pw2Err"></div>
+        </div>
+
+        <button class="btn-primary" type="submit" id="authSubmit">Log in</button>
+      </form>
+
+      <p class="switch" id="switchText"></p>
+    </div>
+  </div>
+
+  <aside class="promo">
+    <h2>Type it. Do it. With <i><u>Noted.</u></i></h2>
+	  <img src="notedob.png" alt="Noted app preview" style="max-width:550px; width:100%;">
+    <p>Be productive anywhere at anytime.</p>
+  </aside>
+</section>
+
+<!-- ONBOARDING STEP 1 -->
+<section class="screen onboard" id="step1">
+  <h1>Welcome to Noted<i>!</i></h1>
+  <p class="sub">We'd like to get to know you through your profile! Create one to personalize how you'll appear to collaborators.</p>
+  <div class="progress"><span class="on"></span><span></span><span></span></div>
+  <div class="divider"></div>
+  <div class="avatar" id="avatar">A</div>
+  <button class="change" type="button">Change</button>
+  <div class="name-row">
+    <div><label for="first">First Name</label><input id="first" value="Angeline"></div>
+    <div><label for="last">Last Name</label><input id="last" value="Sanchez"></div>
+  </div>
+  <button class="btn-next" data-go="step2">Next ›</button>
+</section>
+
+<!-- ONBOARDING STEP 2 -->
+<section class="screen onboard" id="step2">
+  <h1>How are you planning to use Noted?</h1>
+  <p class="sub">We'll fit the experience to your needs. Don't worry, you can change it later.</p>
+  <div class="progress"><span></span><span class="on"></span><span></span></div>
+  <div class="divider"></div>
+  <div class="options" id="options">
+    <button class="option selected" type="button" data-value="personal"><span class="ico">👤</span>Personal</button>
+    <button class="option" type="button" data-value="student"><span class="ico">🎓</span>Student</button>
+    <button class="option" type="button" data-value="work"><span class="ico">💼</span>Work</button>
+  </div>
+  <button class="btn-next" data-go="step3">Next ›</button>
+</section>
+
+<!-- ONBOARDING STEP 3 -->
+<section class="screen onboard" id="step3">
+  <h1>You're all set<i>!</i></h1>
+  <p class="sub">Your account is successfully set up. You can now use Noted to your liking!</p>
+  <div class="progress"><span></span><span></span><span class="on"></span></div>
+  <div class="divider"></div>
+  <div class="welcome-card">
+    <span class="tag">✎ Annotate</span>
+    <h2>Are you ready to <i>write</i>?</h2>
+    <p>Embark on a journey to productivity with Noted - where <b><u>all you need is at one place</u></b>.</p>
+  </div>
+  <button class="btn-next" id="done">Done</button>
+</section>
+
+<script>
+  const state = { mode: "login", usage: "personal" };
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  function show(id) {
+    $$(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+    window.scrollTo(0, 0);
+  }
+
+  /* ----- Log in / Sign up toggle ----- */
+  function setMode(mode) {
+    state.mode = mode;
+    const signup = mode === "signup";
+    $$(".signup-only").forEach(el => el.hidden = !signup);
+    $$(".login-only").forEach(el => el.hidden = signup);
+    $("#authSubmit").textContent = signup ? "Sign up" : "Log in";
+    $("#switchText").innerHTML = signup
+      ? 'Already have an account? <a data-mode="login">Log in</a>'
+      : "Don't have an account yet? <a data-mode=\"signup\"><i>Sign up now!</i></a>";
+    $$(".error").forEach(e => e.textContent = "");
+  }
+  $("#switchText").addEventListener("click", e => {
+    const a = e.target.closest("a[data-mode]");
+    if (a) setMode(a.dataset.mode);
+  });
+  setMode("login");
+
+  /* ----- Show / hide password ----- */
+  $$(".eye").forEach(btn => btn.addEventListener("click", () => {
+    const input = document.getElementById(btn.dataset.target);
+    input.type = input.type === "password" ? "text" : "password";
+  }));
+
+  /* ----- Validation + submit ----- */
+  $("#authForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const email = $("#email").value.trim();
+    const pw = $("#pw").value;
+    const pw2 = $("#pw2").value;
+    let ok = true;
+
+    $("#emailErr").textContent = /^\S+@\S+\.\S+$/.test(email) ? "" : (ok = false, "Enter a valid email address.");
+    $("#pwErr").textContent = pw.length >= 8 ? "" : (ok = false, "Password must be at least 8 characters.");
+    $("#pw2Err").textContent = "";
+    if (state.mode === "signup" && pw !== pw2) {
+      $("#pw2Err").textContent = "Passwords don't match.";
+      ok = false;
+    }
+    if (!ok) return;
+
+    if (state.mode === "signup") {
+      const name = email.split("@")[0];
+      $("#first").value = name.charAt(0).toUpperCase() + name.slice(1);
+      $("#last").value = "";
+      updateAvatar();
+      show("step1");
+    } else {
+      alert("Logged in! Send the user to the dashboard here.");
+    }
+  });
+
+  /* ----- Step 1: avatar follows first name ----- */
+  function updateAvatar() {
+    const f = $("#first").value.trim();
+    $("#avatar").textContent = f ? f[0].toUpperCase() : "?";
+  }
+  $("#first").addEventListener("input", updateAvatar);
+
+  /* ----- Next buttons ----- */
+  $$("[data-go]").forEach(btn => btn.addEventListener("click", () => show(btn.dataset.go)));
+
+  /* ----- Step 2: pick one option ----- */
+  $("#options").addEventListener("click", e => {
+    const opt = e.target.closest(".option");
+    if (!opt) return;
+    $$(".option").forEach(o => o.classList.toggle("selected", o === opt));
+    state.usage = opt.dataset.value;
+  });
+
+  /* ----- Step 3: finish ----- */
+  $("#done").addEventListener("click", () => {
+    console.log("Onboarding complete:", {
+      firstName: $("#first").value,
+      lastName: $("#last").value,
+      usage: state.usage
+    });
+    alert("Onboarding complete! Redirect to the dashboard here.");
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noted! – Onboarding</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- LOG IN / SIGN UP -->
+<section class="screen auth active" id="auth">
+  <div class="auth-form">
+    <div class="form-box">
+		<div class="logo">
+			<img src="noted-logo-icon.png" alt="Noted logo">
+		</div>
+      <h1>Welcome to Noted<i>!</i></h1>
+      <p class="sub">Sign in or Sign Up if you don't have an account yet.</p>
+
+      <button class="btn-google" type="button">
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4.1 7.1-10.1 7.1-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.6l-7.5-5.8c-2 1.4-4.7 2.3-7.7 2.3-6.3 0-11.7-4.1-13.6-9.8l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="error" id="googleErr" role="alert"></div>
+      <div class="or">OR</div>
+
+      <form id="authForm" novalidate>
+        <div class="field">
+          <div class="row"><label for="email">Email address <span class="req signup-only" hidden>*</span></label></div>
+          <div class="input-wrap"><input id="email" type="email" placeholder="user@gmail.com" autocomplete="email"></div>
+          <div class="error" id="emailErr"></div>
+        </div>
+
+        <div class="field">
+          <div class="row">
+            <label for="pw">Password <span class="req signup-only" hidden>*</span></label>
+            <a href="#" class="login-only">Forgot Your Password?</a>
+          </div>
+          <div class="input-wrap">
+            <input id="pw" type="password" placeholder="enter your password" autocomplete="current-password">
+            <button type="button" class="eye" data-target="pw" aria-label="Show password"><svg class="icon-closed" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9C6 14.5 18 14.5 21 9"/><path d="M4.2 10.5L3.3 12.8M6.7 12.1L6 14.5M12 13.1V15.6M17.3 12.1L18 14.5M19.8 10.5L20.7 12.8"/></svg><svg class="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="error" id="pwErr"></div>
+          <ul class="pw-rules signup-only" id="pwRules" hidden>
+            <li data-rule="length">At least 8 characters</li>
+            <li data-rule="lower">One lowercase letter</li>
+            <li data-rule="upper">One uppercase letter</li>
+            <li data-rule="special">One special symbol (e.g. ! @ # $ %)</li>
+          </ul>
+        </div>
+
+        <div class="field signup-only" hidden>
+          <div class="row"><label for="pw2">Confirm Password <span class="req">*</span></label></div>
+          <div class="input-wrap">
+            <input id="pw2" type="password" placeholder="enter your password again" autocomplete="new-password">
+            <button type="button" class="eye" data-target="pw2" aria-label="Show password"><svg class="icon-closed" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9C6 14.5 18 14.5 21 9"/><path d="M4.2 10.5L3.3 12.8M6.7 12.1L6 14.5M12 13.1V15.6M17.3 12.1L18 14.5M19.8 10.5L20.7 12.8"/></svg><svg class="icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="error" id="pw2Err"></div>
+        </div>
+
+        <button class="btn-primary" type="submit" id="authSubmit">Log in</button>
+      </form>
+
+      <p class="switch" id="switchText"></p>
+    </div>
+  </div>
+
+  <aside class="promo">
+    <h2>Type it. Do it. With <i><u>Noted.</u></i></h2>
+    <img src="notedob.png" alt="Noted app preview showing dashboard, notes, timer and calendar">
+    <p>Be productive anywhere at anytime.</p>
+  </aside>
+</section>
+
+<!-- ONBOARDING STEP 1 -->
+<section class="screen onboard" id="step1">
+  <h1>Welcome to Noted<i>!</i></h1>
+  <p class="sub">We'd like to get to know you through your profile! Create one to personalize how you'll appear to collaborators.</p>
+  <div class="progress"><span class="on"></span><span></span><span></span></div>
+  <div class="divider"></div>
+  <div class="avatar" id="avatar">A</div>
+  <button class="change" type="button">Change</button>
+  <div class="name-row">
+    <div class="name-field"><label for="first">First Name</label><input id="first" value="Angeline"></div>
+    <div class="name-field"><label for="last">Last Name</label><input id="last" value="Sanchez"></div>
+  </div>
+  <button class="btn-next" data-go="step2">Next ›</button>
+</section>
+
+<!-- ONBOARDING STEP 2 -->
+<section class="screen onboard" id="step2">
+  <h1>How are you planning to use Noted?</h1>
+  <p class="sub">We'll fit the experience to your needs. Don't worry, you can change it later.</p>
+  <div class="progress"><span></span><span class="on"></span><span></span></div>
+  <div class="divider"></div>
+  <div class="options" id="options">
+    <button class="option selected" type="button" data-value="personal"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4.2"/><path d="M3.5 21c0-4.6 3.8-7.500 8.500-7.500s8.500 2.900 8.500 7.500z"/></svg>Personal</button>
+    <button class="option" type="button" data-value="student"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4 1.500 9.500 12 15l8.500-4.400V17h2V9.500z"/><path d="M5.500 13.200V17c0 1.600 3 3 6.500 3s6.500-1.400 6.500-3v-3.800L12 16.500z"/></svg>Student</button>
+    <button class="option" type="button" data-value="work"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="8" r="3.800"/><path d="M2 20c0-4 3.100-6.500 7-6.500 1.400 0 2.600.3 3.600.9V20z"/><rect x="13.500" y="14" width="9" height="6.500" rx="1.200"/></svg>Work</button>
+  </div>
+  <button class="btn-next" data-go="step3">Next ›</button>
+</section>
+
+<!-- ONBOARDING STEP 3 -->
+<section class="screen onboard" id="step3">
+  <h1>You're all set<i>!</i></h1>
+  <p class="sub">Your account is successfully set up. You can now use Noted to your liking!</p>
+  <div class="progress"><span></span><span></span><span class="on"></span></div>
+  <div class="divider"></div>
+  <div class="welcome-card">
+    <span class="tag">✎ Annotate</span>
+    <h2>Are you ready to <i>write</i>?</h2>
+    <p>Embark on a journey to productivity with Noted - where <b><u>all you need is at one place</u></b>.</p>
+  </div>
+  <button class="btn-next" id="done">Done</button>
+</section>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="script.js"></script>
+</body>
+</html>

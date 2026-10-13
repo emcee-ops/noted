@@ -1,0 +1,168 @@
+/* ===== Design tokens (sized from the Figma frame) ===== */
+:root {
+  --bg: #e8ebee;
+  --card: #ffffff;
+  --field: #e1e4e7;
+  --line: #b9bec4;
+  --ink: #111315;
+  --muted: #70767d;
+  --dark: #22262b;
+  --accent: #3b2a00;
+  --danger: #c0392b;
+
+  --content-w: 410px;   /* width of every form / step column */
+  --control-h: 56px;    /* height of every input and button */
+  --radius: 10px;
+  --radius-card: 24px;
+
+  --fs-title: 24px;
+  --fs-heading: 18px;
+  --fs-label: 15px;
+  --fs-input: 16px;
+  --fs-body: 14px;
+  --fs-small: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: var(--fs-body);
+}
+button, input { font: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ===== Shared type ===== */
+h1 { font-size: var(--fs-title); font-weight: 700; line-height: 1.2; }
+h1 i, h2 i { font-style: italic; }
+.sub { font-size: var(--fs-body); color: var(--muted); line-height: 1.4; margin: 8px 0 28px; }
+
+/* ===== Shared controls (same size everywhere) ===== */
+.btn-google, .btn-primary, .input-wrap input {
+  width: 100%; height: var(--control-h); border-radius: var(--radius);
+  font-size: var(--fs-input);
+}
+.btn-google {
+  border: 1px solid var(--line); background: var(--bg);
+  font-weight: 700; font-size: var(--fs-label); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-primary {
+  border: 0; background: var(--dark); color: #fff;
+  font-weight: 700; font-size: var(--fs-label); cursor: pointer;
+}
+.btn-primary:hover { background: #343a41; }
+.btn-primary { margin-top: 8px; }
+
+.input-wrap { position: relative; }
+.input-wrap input {
+  padding: 0 16px; border: 1px solid var(--line);
+  background: var(--field); color: var(--ink);
+}
+.input-wrap input::placeholder { color: #8a9097; }
+.eye {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  background: none; border: 0; cursor: pointer; color: var(--ink);
+  width: 28px; height: 28px; display: grid; place-items: center;
+}
+.eye .icon-open { display: none; }
+.eye.is-shown .icon-open { display: block; }
+.eye.is-shown .icon-closed { display: none; }
+
+.field { text-align: left; margin-bottom: 18px; }
+.field .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.field label { font-size: var(--fs-label); font-weight: 700; }
+.field .req { color: var(--danger); }
+.field a { font-size: var(--fs-body); color: var(--muted); text-decoration: none; }
+.pw-rules { list-style: none; margin-top: 8px; font-size: var(--fs-small); color: var(--muted); }
+.pw-rules li { padding: 2px 0; }
+.pw-rules li::before { content: "○"; display: inline-block; width: 18px; }
+.pw-rules li.met { color: #1e8e3e; }
+.pw-rules li.met::before { content: "✓"; }
+.error { color: var(--danger); font-size: var(--fs-small); margin-top: 10px; min-height: 14px; text-align: left; }
+
+/* ===== Auth screens ===== */
+.auth { gap: 32px; padding: 32px; height: 100vh; height: 100dvh; min-height: 0; }
+.auth-form { flex: 1; display: flex; min-height: 0; overflow-y: auto; }
+.form-box { width: 100%; max-width: var(--content-w); text-align: center; margin: auto; }
+.logo {
+  width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 12px;
+  background: var(--card); display: grid; place-items: center;
+  font-weight: 700; font-size: 26px; box-shadow: 0 1px 4px rgba(0,0,0,.12);
+}
+.logo img { width: 70%; height: 70%; object-fit: contain; }
+.or {
+  display: flex; align-items: center; gap: 12px; margin: 20px 0;
+  font-size: var(--fs-label); font-weight: 700;
+}
+.or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.switch { margin-top: 20px; font-size: var(--fs-body); color: var(--muted); }
+.switch a { color: var(--ink); font-weight: 700; text-decoration: underline; cursor: pointer; }
+
+.promo {
+  flex: 0 0 47%; min-height: 0; overflow: hidden;
+  background: var(--card); border-radius: var(--radius-card); padding: 32px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center;
+}
+.promo h2 { font-size: 25px; font-weight: 700; }
+.promo img { flex: 1 1 0; min-height: 0; width: 100%; max-width: 760px; object-fit: contain; }
+.promo p  { font-size: 18px; color: var(--muted); }
+
+/* ===== Onboarding (sized from the Figma frames) ===== */
+.onboard { flex-direction: column; align-items: center; padding: 56px 24px; text-align: center; }
+.onboard .sub { max-width: 400px; margin: 12px auto 28px; line-height: 1.5; }
+.progress { display: flex; gap: 22px; justify-content: center; margin-bottom: 36px; }
+.progress span { width: 63px; height: 3px; border-radius: 2px; background: #c3c8cd; }
+.progress span.on { background: #5b6168; }
+.divider { width: 100%; max-width: 820px; height: 1px; background: var(--line); margin-bottom: 38px; }
+
+.btn-next {
+  min-width: 84px; height: 36px; padding: 0 16px; margin-top: 44px;
+  border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
+  font-size: 12px; font-weight: 700; color: var(--ink); cursor: pointer;
+}
+.btn-next:hover { background: #dde1e5; }
+
+.avatar {
+  width: 114px; height: 114px; border-radius: 50%; background: var(--accent); color: #fff;
+  font-size: 56px; display: grid; place-items: center; margin: 0 auto 8px;
+}
+.change { font-size: var(--fs-body); color: var(--muted); background: none; border: 0; cursor: pointer; margin-bottom: 40px; }
+.name-row { display: flex; gap: 60px; justify-content: center; }
+.name-field { text-align: left; }
+.name-field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.name-field input {
+  width: 100px; border: 0; border-bottom: 1px solid transparent; background: transparent;
+  font-size: var(--fs-body); color: var(--ink); padding: 2px 0;
+}
+.name-field input:focus { border-bottom-color: var(--ink); outline: none; }
+
+.options { display: grid; grid-template-columns: repeat(3, 172px); gap: 22px; justify-content: center; }
+.option {
+  height: 163px; border-radius: 12px; border: 1px solid #d0d4d8;
+  background: #e4e7ea; color: var(--muted); font-size: var(--fs-body); font-weight: 700;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+}
+.option svg { width: 30px; height: 30px; }
+.option.selected { background: #d9dce0; border: 2px solid #5b6168; color: var(--ink); }
+
+.welcome-card {
+  width: 100%; max-width: 535px; background: #fff; border-radius: 12px; padding: 20px 24px; text-align: left;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}
+.welcome-card .tag { display: inline-block; font-size: var(--fs-small); padding: 4px 8px; border-radius: 6px; background: #fff; border: 1px solid var(--line); margin-bottom: 12px; }
+.welcome-card h2 { font-size: 20px; margin-bottom: 8px; }
+.welcome-card p { font-size: 13px; line-height: 1.5; }
+
+@media (max-width: 860px) {
+  .promo { display: none; }
+  .auth { padding: 16px; }
+  .options { grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 420px; }
+  .option { height: 120px; }
+}

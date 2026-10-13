@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>noted - Dashboard, Notes &amp; Calendar</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Google Fonts: Material Symbols & Typographic Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=JetBrains+Mono:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="main-page-styles.css">
+</head>
+
+<body id="app-body" class="h-screen max-h-screen w-full flex flex-col p-2 sm:p-4 gap-2 sm:gap-4 text-zinc-900 bg-[#f4f5f7] transition-colors duration-300 select-none overflow-hidden relative">
+
+  <!-- APP-WIDE FULL WHITE LOADING SCREEN -->
+  <div id="app-loading-screen" class="absolute inset-0 z-[100] bg-white flex flex-col items-center justify-center gap-3 transition-opacity duration-500">
+    <div class="w-20 h-20 overflow-hidden flex items-center justify-center">
+  <img src="noted-logo-icon.png" alt="noted logo" class="w-full h-full object-contain animate-bounce">
+</div>
+    <span class="text-xl font-black tracking-tight text-zinc-900">noted</span>
+  </div>
+
+  <script>
+    // Automatically hide the loading screen once window loads completely
+    window.addEventListener('load', () => {
+      const loader = document.getElementById('app-loading-screen');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 500);
+      }
+    });
+  </script>
+
+<!-- TOP HEADER ROW -->
+  <header class="w-full flex items-center justify-between gap-2 sm:gap-4 flex-shrink-0 z-30">
+    <!-- Brand / Home Pill -->
+    <button id="brand-header-btn" onclick="switchView('dashboard')" class="h-12 bg-white rounded-2xl border border-zinc-200/80 shadow-xs flex items-center px-4 gap-2.5 transition-all hover:border-zinc-300 flex-shrink-0 cursor-pointer w-64" title="noted home">
+      <div class="w-8 h-8 rounded-xl overflow-hidden flex items-center justify-center flex-shrink-0">
+        <img src="noted-logo-icon.png" alt="noted logo" class="w-full h-full object-contain">
+      </div>
+      <span class="font-black text-lg tracking-tight text-zinc-900">noted</span>
+    </button>
+
+    <div id="global-search-container" class="relative flex-1 w-full min-w-0">
+  <div class="h-12 w-full bg-white rounded-2xl border border-zinc-200/80 shadow-xs flex items-center px-4 gap-3 focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-900/5 transition-all">
+    <span class="material-symbols-rounded text-lg text-zinc-400 flex-shrink-0">search</span>
+    <input 
+      type="text" 
+      id="global-search-input" 
+      placeholder="Search notes by name or keyword..." 
+      class="w-full bg-transparent text-sm text-zinc-800 placeholder-zinc-400 focus:outline-none"
+      oninput="handleGlobalSearch(this.value)"
+      onfocus="handleGlobalSearch(this.value)"
+      autocomplete="off"
+    >
+    <button 
+      id="global-search-clear-btn" 
+      type="button" 
+      onclick="clearGlobalSearch()" 
+      class="hidden text-zinc-400 hover:text-zinc-600 cursor-pointer flex-shrink-0"
+      title="Clear search"
+    >
+      <span class="material-symbols-rounded text-base">close</span>
+    </button>
+  </div>
+
+  <!-- Floating Results Dropdown Overlay (Spans 100% of Search Bar) -->
+  <div 
+    id="global-search-dropdown" 
+    class="hidden absolute top-full left-0 right-0 w-full mt-2 bg-white rounded-2xl border border-zinc-200/90 shadow-2xl p-2 z-50 max-h-96 overflow-y-auto space-y-1"
+  >
+    <!-- Injected via JS -->
+  </div>
+</div>
+  </header>
+
+  <!-- MAIN WORKSPACE ROW -->
+  <div class="flex-1 flex gap-2 sm:gap-4 overflow-hidden min-h-0 w-full">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside id="main-sidebar" class="bg-white rounded-3xl border border-zinc-200/80 shadow-xs flex flex-col justify-between transition-all duration-300 flex-shrink-0 relative overflow-hidden select-none w-64 p-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div class="flex flex-col overflow-hidden">
+        <!-- User Greeting Row -->
+        <div class="flex items-center justify-between w-full overflow-hidden mb-7">
+          <div>
+            <div class="flex items-center gap-1 text-[11px] text-zinc-500 font-medium leading-tight">
+  <span>Hello</span>
+  <img 
+    src="waving_hand_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" 
+    alt="waving hand" 
+    class="w-3.5 h-3.5 object-contain brightness-0 opacity-60 [html.dark-theme_&]:brightness-0 [html.dark-theme_&]:invert [html.dark-theme_&]:opacity-90 inline-block align-middle"
+  />
+</div>
+            <h2 class="text-lg font-black tracking-tight text-zinc-900 m-0 leading-tight">Angeline</h2>
+          </div>
+
+          <button onclick="toggleSidebar()" class="w-7 h-7 rounded-full bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 flex items-center justify-center text-zinc-500 transition-colors flex-shrink-0 shadow-2xs cursor-pointer" title="Collapse sidebar">
+            <span class="material-symbols-rounded text-base leading-none">chevron_left</span>
+          </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="space-y-1">
+          <button onclick="switchView('dashboard')" class="w-full flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium transition-colors cursor-pointer text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900">
+            <span class="material-symbols-rounded text-xl text-zinc-700">dashboard</span>
+            <span>Dashboard</span>
+          </button>
+
+        <!-- My Notes Accordion -->
+<div>
+  <div onclick="toggleNotesAccordion()" class="w-full flex items-center justify-between px-3 py-2 rounded-2xl text-sm font-medium text-zinc-600 hover:bg-zinc-50 transition-colors cursor-pointer select-none">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-rounded text-xl text-zinc-600">description</span>
+      <span>My Notes</span>
+    </div>
+    <div class="flex items-center gap-1">
+      <!-- Create Folder Button -->
+      <button type="button" onclick="event.stopPropagation(); openCreateFolderModal();" class="w-5 h-5 rounded-md hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center transition-colors cursor-pointer" title="Create folder">
+        <span class="material-symbols-rounded text-sm">create_new_folder</span>
+      </button>
+      <button type="button" onclick="event.stopPropagation(); openCreateNoteModal();" class="w-5 h-5 rounded-md hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 flex items-center justify-center transition-colors cursor-pointer" title="Create note">
+        <span class="material-symbols-rounded text-sm">add</span>
+      </button>
+      <span id="notes-chevron-icon" class="material-symbols-rounded text-sm text-zinc-400 transition-transform">expand_more</span>
+    </div>
+  </div>
+
+  <div 
+  id="sidebar-notes-container" 
+  class="pl-3 pr-1 mt-1 space-y-1 overflow-y-auto max-h-[40vh] scrollbar-hover-only ${state.notesExpanded ? '' : 'hidden'}"
+>
+  ${renderSidebarNotesHtml()}
+</div>
+</div>
+
+          <button onclick="switchView('calendar')" class="w-full flex items-center gap-3 px-3 py-2 rounded-2xl text-sm transition-colors cursor-pointer text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900">
+            <span class="material-symbols-rounded text-xl text-zinc-700">calendar_month</span>
+            <span>Calendar</span>
+          </button>
+
+          <button onclick="switchView('personalization')" class="w-full flex items-center gap-3 px-3 py-2 rounded-2xl text-sm font-medium hover:bg-zinc-50 hover:text-zinc-900 transition-colors cursor-pointer text-zinc-600">
+            <span class="material-symbols-rounded text-xl text-zinc-600">palette</span>
+            <span>Personalization</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- User Profile Card -->
+   <div class="pt-3 border-t border-zinc-100">
+  <button 
+    type="button" 
+    onclick="toggleAccountMenu(event)" 
+    id="user-profile-pill-btn"
+    class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-white hover:bg-zinc-50/80 border border-zinc-200/80 hover:border-zinc-300 shadow-2xs transition-all cursor-pointer group text-left select-none relative"
+  >
+    <div class="flex items-center gap-3 min-w-0 flex-1">
+      <div class="w-9 h-9 rounded-full bg-[#1e2329] text-white font-bold flex items-center justify-center text-sm flex-shrink-0 shadow-xs">
+        A
+      </div>
+      <div class="truncate">
+        <p class="text-xs font-extrabold text-zinc-900 tracking-tight leading-snug truncate">Angeline Sanchez</p>
+        <p class="text-[11px] text-zinc-500 font-normal leading-tight truncate">angelineee@gmail.com</p>
+      </div>
+    </div>
+    <span id="account-chevron-icon" class="material-symbols-rounded text-zinc-800 text-xl flex-shrink-0 transition-transform duration-200 group-hover:translate-x-0.5">
+      chevron_right
+    </span>
+  </button>
+</div>
+
+  <!-- Popover Menu: Floats outside the sidebar right beside the arrow icon -->
+  <!-- Account Popover Menu (Placed outside the sidebar hierarchy) -->
+<!-- Permanent Floating Account Modal (Safe from sidebar re-renders) -->
+<div 
+  id="account-popover-menu" 
+  class="fixed hidden w-64 bg-white rounded-3xl border border-zinc-200/90 shadow-2xl p-2.5 space-y-1 z-[999] transition-all origin-bottom-left"
+  onclick="event.stopPropagation()"
+>
+  <!-- Current User Account Header -->
+  <div class="px-3 py-2.5 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center gap-2.5 mb-1.5">
+    <div class="w-8 h-8 rounded-full bg-[#1e2329] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 shadow-2xs">
+      A
+    </div>
+    <div class="min-w-0 flex-1">
+      <p class="text-xs font-bold text-zinc-900 truncate">Angeline Sanchez</p>
+      <p class="text-[10px] text-zinc-500 truncate">angelineee@gmail.com</p>
+    </div>
+    <span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" title="Active Account"></span>
+  </div>
+
+  <!-- Action: Switch Account -->
+  <button 
+    type="button" 
+    onclick="handleSwitchAccount()" 
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-xl transition-colors cursor-pointer"
+  >
+    <span class="material-symbols-rounded text-base text-zinc-500">switch_account</span>
+    <span>Switch account</span>
+  </button>
+
+  <!-- Action: Add Account -->
+  <button 
+    type="button" 
+    onclick="handleAddAccount()" 
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100/80 rounded-xl transition-colors cursor-pointer"
+  >
+    <span class="material-symbols-rounded text-base text-zinc-500">person_add</span>
+    <span>Add account</span>
+  </button>
+
+  <div class="h-px bg-zinc-100 my-1"></div>
+
+  <!-- Action: Log Out -->
+  <button 
+    type="button" 
+    onclick="closeAccountMenu(); openLogoutModal();" 
+    class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+  >
+    <span class="material-symbols-rounded text-base text-rose-500">logout</span>
+    <span>Log out</span>
+  </button>
+</div>
+    </aside>
+
+    <!-- RIGHT MAIN WORKSPACE -->
+    <main class="flex-1 h-full min-h-0 overflow-y-auto overflow-x-hidden space-y-4 pr-1 flex flex-col">
+
+      <!-- VIEW 1: DASHBOARD -->
+      <div id="view-dashboard" class="flex-1 min-h-0 flex flex-col gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-shrink-0">
+          <!-- Points Widget -->
+          <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
+  <img 
+    src="star_rate_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg" 
+    alt="Points star" 
+    class="w-4 h-4 object-contain [filter:invert(68%)_sepia(75%)_saturate(2000%)_hue-rotate(355deg)_brightness(102%)_contrast(95%)]"
+  />
+  <span>My Points</span>
+</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-black text-zinc-900 points-display">0</span>
+                <span class="text-sm font-medium text-zinc-500">points</span>
+              </div>
+            </div>
+            <button onclick="switchView('personalization')" class="bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-sm font-semibold shadow-xs transition-all cursor-pointer">
+              Redeem
+            </button>
+          </div>
+
+         
+<div id="dash-timer-widget" class="relative bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-xs flex flex-col justify-between transition-all">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2 text-zinc-600 text-sm font-medium">
+      <span class="material-symbols-rounded text-lg text-zinc-500">timer</span>
+      <span class="timer-label font-bold text-zinc-800">Focus timer</span>
+      <span class="timer-disabled-badge hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-400 border border-zinc-200">
+        Disabled
+      </span>
+    </div>
+
+    <!-- Active State: Next Break Pill + Quick Disable Button -->
+    <div class="timer-active-header-actions flex items-center gap-1.5">
+      <span class="next-pill text-[11px] font-bold px-3 py-1 rounded-full text-white bg-[#1f2329] flex items-center gap-1.5 shadow-2xs select-none">
+        <span class="material-symbols-rounded text-xs text-amber-300">bolt</span>
+        <span>Next break <strong class="text-white font-extrabold">Auto</strong></span>
+      </span>
+      <button 
+        type="button" 
+        onclick="toggleSystemFeature('timer')" 
+        class="text-[11px] font-bold px-2.5 py-1 rounded-full text-zinc-400 hover:text-rose-600 hover:bg-rose-50 border border-zinc-200 hover:border-rose-200 transition-colors cursor-pointer" 
+        title="Disable Timer System-Wide"
+      >
+        Disable
+      </button>
+    </div>
+
+    <!-- Disabled State: Quick Enable Button -->
+    <button 
+      type="button"
+      id="dash-timer-enable-btn"
+      onclick="toggleSystemFeature('timer')" 
+      class="timer-enable-btn hidden text-[11px] font-bold px-3 py-1 rounded-full text-white bg-zinc-900 hover:bg-zinc-800 active:scale-95 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+      title="Turn Focus Timer On"
+    >
+      <span class="material-symbols-rounded text-xs text-emerald-400">power_settings_new</span>
+      <span>Enable Timer</span>
+    </button>
+  </div>
+
+  <!-- Timer Display & Controls Area -->
+  <div class="timer-controls-area flex items-center justify-between mt-2 transition-all">
+    <div 
+      class="text-3xl font-black tracking-tight text-zinc-900 font-mono timer-display cursor-pointer hover:opacity-80 transition-opacity" 
+      onclick="if(state.featureTimer) openTimerModal()"
+    >
+      00:25:00
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button 
+        onclick="if(state.featureTimer) toggleTimer()" 
+        class="w-9 h-9 rounded-full border-2 border-zinc-900 text-zinc-900 flex items-center justify-center hover:bg-zinc-100 transition-colors shadow-2xs cursor-pointer timer-play-btn" 
+        title="Start / Pause"
+      >
+        <span class="material-symbols-rounded timer-icon text-lg">play_arrow</span>
+      </button>
+      <button 
+        onclick="if(state.featureTimer) resetTimer()" 
+        class="w-9 h-9 rounded-full bg-[#18181b] text-white flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-2xs cursor-pointer" 
+        title="Reset"
+      >
+        <span class="material-symbols-rounded text-base">replay</span>
+      </button>
+      <button 
+        onclick="if(state.featureTimer) skipTimer()" 
+        class="w-9 h-9 rounded-full border-2 border-zinc-900 text-zinc-900 flex items-center justify-center hover:bg-zinc-100 transition-colors shadow-2xs cursor-pointer" 
+        title="Skip"
+      >
+        <span class="material-symbols-rounded text-base">skip_next</span>
+      </button>
+      <button 
+        onclick="if(state.featureTimer) openTimerModal()" 
+        class="w-9 h-9 rounded-full bg-[#18181b] text-white flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-2xs cursor-pointer" 
+        title="Edit timer"
+      >
+        <span class="material-symbols-rounded text-base">edit</span>
+      </button>
+    </div>
+  </div>
+</div>
+        </div>
+
+        <!-- Notes Files Container -->
+        <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs flex-1 min-h-0 flex flex-col gap-4">
+          <div class="flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-2">
+              <button class="bg-zinc-100 text-zinc-900 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-2xs">
+                <span class="material-symbols-rounded text-sm">subject</span>
+                <span>All</span>
+              </button>
+
+              <div class="flex items-center bg-zinc-100/90 p-0.5 rounded-xl border border-zinc-200/80">
+                <button id="view-mode-list-btn" onclick="setFilesViewMode('list')" class="px-3 py-1 rounded-lg text-xs font-extrabold bg-white text-zinc-900 shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer">
+                  <span class="material-symbols-rounded text-sm">format_list_bulleted</span>
+                  <span>List</span>
+                </button>
+                <button id="view-mode-grid-btn" onclick="setFilesViewMode('grid')" class="px-3 py-1 rounded-lg text-xs font-bold text-zinc-500 hover:text-zinc-900 flex items-center gap-1.5 transition-all cursor-pointer">
+                  <span class="material-symbols-rounded text-sm">grid_view</span>
+                  <span>Grid</span>
+                </button>
+              </div>
+            </div>
+            <span id="dashboard-notes-count" class="text-xs text-zinc-400 font-medium">0 files</span>
+          </div>
+
+          <div id="notes-content-container" class="flex-1 min-h-0 flex flex-col overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: CALENDAR -->
+      <div id="view-calendar" class="space-y-4 hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Points Widget -->
+          <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs flex items-center justify-between">
+            <div>
+              <div class="flex items-center gap-1.5 text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">
+                <span class="material-symbols-rounded text-base text-amber-500 fill-1">military_tech</span>
+                <span>My Points</span>
+              </div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-black text-zinc-900 points-display">0</span>
+                <span class="text-sm font-medium text-zinc-500">points</span>
+              </div>
+            </div>
+            <button onclick="switchView('personalization')" class="bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-white px-5 py-2.5 rounded-2xl text-sm font-semibold shadow-xs transition-all cursor-pointer">
+              Redeem
+            </button>
+          </div>
+
+          <div id="cal-timer-widget" class="relative bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-xs flex flex-col justify-between transition-all">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2 text-zinc-600 text-sm font-medium">
+      <span class="material-symbols-rounded text-lg text-zinc-500">timer</span>
+      <span class="timer-label font-bold text-zinc-800">Focus timer</span>
+      <span id="cal-timer-disabled-badge" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-400 border border-zinc-200">
+        Disabled
+      </span>
+    </div>
+
+    <!-- Active State: Next Break Pill -->
+    <span class="next-pill text-[11px] font-bold px-3 py-1 rounded-full text-white bg-[#1f2329] flex items-center gap-1.5 shadow-2xs select-none">
+      <span class="material-symbols-rounded text-xs text-amber-300">bolt</span>
+      <span>Next break <strong class="text-white font-extrabold">Auto</strong></span>
+    </span>
+
+    <!-- Disabled State: One-click Enable Button -->
+    <button 
+      type="button"
+      id="cal-timer-enable-btn"
+      onclick="toggleSystemFeature('timer')" 
+      class="hidden text-[11px] font-bold px-3 py-1 rounded-full text-white bg-zinc-900 hover:bg-zinc-800 active:scale-95 shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+      title="Turn Focus Timer On"
+    >
+      <span class="material-symbols-rounded text-xs text-emerald-400">power_settings_new</span>
+      <span>Enable Timer</span>
+    </button>
+  </div>
+
+  <!-- Timer Display & Controls (Dimmed and click-locked when disabled) -->
+  <div id="cal-timer-controls-area" class="flex items-center justify-between mt-2 transition-all">
+    <div class="text-3xl font-black tracking-tight text-zinc-900 font-mono timer-display cursor-pointer hover:opacity-80 transition-opacity" onclick="if(state.featureTimer) openTimerModal()">
+      00:25:00
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="if(state.featureTimer) toggleTimer()" class="timer-action-btn w-9 h-9 rounded-full border-2 border-zinc-900 text-zinc-900 flex items-center justify-center hover:bg-zinc-100 transition-colors shadow-2xs cursor-pointer timer-play-btn" title="Start / Pause">
+        <span class="material-symbols-rounded timer-icon text-lg">play_arrow</span>
+      </button>
+      <button onclick="if(state.featureTimer) resetTimer()" class="timer-action-btn w-9 h-9 rounded-full bg-[#18181b] text-white flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-2xs cursor-pointer" title="Reset">
+        <span class="material-symbols-rounded text-base">replay</span>
+      </button>
+      <button onclick="if(state.featureTimer) skipTimer()" class="timer-action-btn w-9 h-9 rounded-full border-2 border-zinc-900 text-zinc-900 flex items-center justify-center hover:bg-zinc-100 transition-colors shadow-2xs cursor-pointer" title="Skip">
+        <span class="material-symbols-rounded text-base">skip_next</span>
+      </button>
+      <button onclick="if(state.featureTimer) openTimerModal()" class="timer-action-btn w-9 h-9 rounded-full bg-[#18181b] text-white flex items-center justify-center hover:bg-zinc-800 transition-colors shadow-2xs cursor-pointer" title="Edit timer">
+        <span class="material-symbols-rounded text-base">edit</span>
+      </button>
+    </div>
+  </div>
+</div>
+        </div>
+
+        <!-- Main Calendar Card -->
+        <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs space-y-5">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-black tracking-tight text-zinc-900">Calendar</h1>
+              <p class="text-xs text-zinc-400 mt-0.5">Switch view types and customize your scheduling display</p>
+            </div>
+            <button onclick="openTaskModal()" class="bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-white px-4 py-2 rounded-2xl text-sm font-semibold shadow-xs flex items-center gap-2 transition-all cursor-pointer">
+              <span class="material-symbols-rounded text-base">add</span>
+              <span>Add Task</span>
+            </button>
+          </div>
+
+          <!-- Month/Year Navigation -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2 pb-1 border-b border-zinc-100">
+            <div class="flex items-center gap-2">
+              <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-xl hover:bg-zinc-100 flex items-center justify-center text-zinc-600 transition-colors cursor-pointer" title="Previous Month">
+                <span class="material-symbols-rounded text-base">chevron_left</span>
+              </button>
+
+              <select id="cal-month-select" onchange="handleMonthSelect(this.value)" class="bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 rounded-xl px-3 py-1.5 text-xs font-bold text-zinc-800 focus:outline-none transition-colors cursor-pointer shadow-2xs"></select>
+
+              <input type="number" id="cal-year-input" onchange="handleYearInput(this.value)" class="w-20 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200/80 rounded-xl px-2.5 py-1.5 text-xs font-bold text-zinc-800 text-center focus:outline-none focus:bg-white focus:border-zinc-400 transition-colors shadow-2xs" title="Type custom year" min="2000" max="2099">
+
+              <button onclick="changeMonth(1)" class="w-8 h-8 rounded-xl hover:bg-zinc-100 flex items-center justify-center text-zinc-600 transition-colors cursor-pointer" title="Next Month">
+                <span class="material-symbols-rounded text-base">chevron_right</span>
+              </button>
+            </div>
+
+            <!-- View Switcher -->
+            <div class="flex items-center gap-1 bg-zinc-100/80 p-1 rounded-2xl border border-zinc-200/80">
+              <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-2 hidden sm:inline">Type:</span>
+              <button id="view-type-month" onclick="setCalendarViewType('month')" class="px-3 py-1 rounded-xl text-xs font-bold bg-white text-zinc-900 shadow-xs cursor-pointer">Month</button>
+              <button id="view-type-week" onclick="setCalendarViewType('week')" class="px-3 py-1 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-900 cursor-pointer">Week</button>
+              <button id="view-type-day" onclick="setCalendarViewType('day')" class="px-3 py-1 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-900 cursor-pointer">Day</button>
+              <button id="view-type-list" onclick="setCalendarViewType('list')" class="px-3 py-1 rounded-xl text-xs font-bold text-zinc-500 hover:text-zinc-900 cursor-pointer">List</button>
+            </div>
+          </div>
+
+          <div id="calendar-viewport" class="min-h-[380px]"></div>
+        </div>
+
+        <!-- Task Management Sections -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        
+          <!-- Active Tasks Card -->
+<div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs flex flex-col">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-rounded text-base text-zinc-700">task_alt</span>
+      <h3 class="font-bold text-sm text-zinc-900">Active Tasks</h3>
+      <span id="active-tasks-count" class="text-[11px] font-bold bg-zinc-100 text-zinc-700 px-2 py-0.5 rounded-full">0</span>
+    </div>
+    <button onclick="openTaskModal()" class="text-xs font-bold text-zinc-700 hover:text-zinc-900 flex items-center gap-1 cursor-pointer transition-colors">
+      <span class="material-symbols-rounded text-sm">add</span> Add Task
+    </button>
+  </div>
+
+  <!-- Dynamic Tasks List -->
+  <div id="active-tasks-container" class="space-y-2 overflow-y-auto max-h-80 pr-1 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-zinc-200">
+    <p class="text-xs text-zinc-400 italic py-6 text-center">No active tasks yet. Click "Add Task" to create one.</p>
+  </div>
+</div>
+
+          <!-- Completed & Deleted Tasks Stack -->
+          <div class="space-y-4">
+            <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <h3 class="font-bold text-zinc-900 text-base">Completed</h3>
+                  <span id="completed-tasks-count" class="text-xs text-zinc-400 font-medium">0 items</span>
+                </div>
+                <button onclick="toggleCollapsible('completed-tasks-list', 'completed-tasks-chevron')" class="w-7 h-7 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-500 transition-colors cursor-pointer">
+                  <span id="completed-tasks-chevron" class="material-symbols-rounded text-base transition-transform">expand_less</span>
+                </button>
+              </div>
+              <div id="completed-tasks-list" class="space-y-2"></div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <h3 class="font-bold text-zinc-900 text-base">Deleted</h3>
+                  <span id="deleted-tasks-count" class="text-xs text-zinc-400 font-medium">0 items</span>
+                </div>
+                <button onclick="toggleCollapsible('deleted-tasks-list', 'deleted-tasks-chevron')" class="w-7 h-7 rounded-full hover:bg-zinc-100 flex items-center justify-center text-zinc-500 transition-colors cursor-pointer">
+                  <span id="deleted-tasks-chevron" class="material-symbols-rounded text-base transition-transform rotate-180">expand_more</span>
+                </button>
+              </div>
+              <div id="deleted-tasks-list" class="space-y-2 hidden"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: MY NOTES -->
+      <div id="view-notes" class="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/80 shadow-xs h-full max-h-full flex flex-col space-y-4 overflow-hidden hidden">
+        <!-- 1. FIXED TOP HEADER (Word count, Annotate toggle, Save) -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-100 flex-shrink-0">
+          <div class="flex items-center gap-3">
+
+            <!-- Read Aloud Tool & Instant Speed Dropdown -->
+<div class="relative flex items-center gap-1.5 bg-white border border-zinc-200/80 rounded-xl px-2.5 py-1.5 shadow-2xs">
+  <button onclick="toggleReadAloud()" id="read-aloud-btn" class="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 hover:text-zinc-900 cursor-pointer transition-colors" title="Read Aloud Entire Note">
+    <span class="material-symbols-rounded text-base text-indigo-600">volume_up</span>
+    <span id="read-aloud-label">Read Aloud</span>
+  </button>
+
+  <div class="w-[1px] h-4 bg-zinc-200 mx-0.5"></div>
+
+  <!-- Speed Dropdown (Visible during playback) -->
+  <select id="speech-speed-dropdown" onchange="updateSpeechRateFromDropdown(this.value)" class="hidden bg-transparent text-[11px] font-bold text-zinc-700 focus:outline-none cursor-pointer" title="Playback Speed">
+    <option value="0.75">0.75x</option>
+    <option value="1" selected>1.0x</option>
+    <option value="1.25">1.25x</option>
+    <option value="1.5">1.5x</option>
+    <option value="2.0">2.0x</option>
+  </select>
+</div>
+
+            <div class="hidden sm:flex items-center gap-2 text-xs text-zinc-400 font-medium">
+              <span id="note-word-count">0 words</span>
+              <span>•</span>
+              <span id="note-char-count">0 characters</span>
+              <span>•</span>
+              <span id="note-read-time">0 min read</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2.5">
+            <button onclick="saveActiveNote()" class="bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-white px-5 py-2 rounded-2xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-rounded text-sm">check</span>
+              <span>Save Note</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. FIXED RICH TEXT TOOLBAR -->
+        <div class="flex flex-wrap items-center gap-1.5 p-2 bg-zinc-50/80 rounded-2xl border border-zinc-200/80 flex-shrink-0">
+          <select id="editor-font-family" onchange="changeFontFamily(this.value)" class="bg-white border border-zinc-200/80 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-zinc-800 focus:outline-none shadow-2xs cursor-pointer" title="Font Family">
+            <option value="font-sans">Helvetica (Sans)</option>
+            <option value="font-serif-editor">Serif (Editorial)</option>
+            <option value="font-mono-editor">Mono (Code)</option>
+            <option value="font-script-editor">Casual (Handwriting)</option>
+          </select>
+
+          <select id="editor-font-size" onchange="changeFontSize(this.value)" class="bg-white border border-zinc-200/80 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-zinc-800 focus:outline-none shadow-2xs cursor-pointer" title="Font Size">
+            <option value="6">H1 (Large)</option>
+            <option value="5">H2 (Medium)</option>
+            <option value="4">H3 (Subhead)</option>
+            <option value="3" selected>Body (Normal)</option>
+            <option value="2">Small (13px)</option>
+          </select>
+
+          <div class="w-[1px] h-5 bg-zinc-200 mx-0.5"></div>
+
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('bold')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-800 font-extrabold text-xs flex items-center justify-center transition-colors cursor-pointer" title="Bold (Ctrl+B)">B</button>
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('italic')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-800 italic font-serif text-xs flex items-center justify-center transition-colors cursor-pointer" title="Italic (Ctrl+I)">I</button>
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('underline')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-800 underline text-xs flex items-center justify-center transition-colors cursor-pointer" title="Underline (Ctrl+U)">U</button>
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('strikeThrough')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-800 line-through text-xs flex items-center justify-center transition-colors cursor-pointer" title="Strikethrough">S</button>
+
+          <div class="w-[1px] h-5 bg-zinc-200 mx-0.5"></div>
+
+          <button onmousedown="event.preventDefault(); setAlignActive(this);" onclick="formatDoc('justifyLeft')" class="align-btn w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer transition-colors" title="Align Left">
+  <span class="material-symbols-rounded text-sm">format_align_left</span>
+</button>
+<button onmousedown="event.preventDefault(); setAlignActive(this);" onclick="formatDoc('justifyCenter')" class="align-btn w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer transition-colors" title="Align Center">
+  <span class="material-symbols-rounded text-sm">format_align_center</span>
+</button>
+<button onmousedown="event.preventDefault(); setAlignActive(this);" onclick="formatDoc('justifyRight')" class="align-btn w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer transition-colors" title="Align Right">
+  <span class="material-symbols-rounded text-sm">format_align_right</span>
+</button>
+<button onmousedown="event.preventDefault(); setAlignActive(this);" onclick="formatDoc('justifyFull')" class="align-btn w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer transition-colors" title="Justify Content">
+  <span class="material-symbols-rounded text-sm">format_align_justify</span>
+</button>
+
+          <div class="w-[1px] h-5 bg-zinc-200 mx-0.5"></div>
+
+          <button id="btn-format-ul" onmousedown="event.preventDefault()" onclick="formatDoc('insertUnorderedList')" class="w-7 h-7 rounded-xl text-xs flex items-center justify-center cursor-pointer transition-colors text-zinc-700 hover:bg-zinc-200/70" title="Bulleted List">
+            <span class="material-symbols-rounded text-sm">format_list_bulleted</span>
+          </button>
+          <button id="btn-format-ol" onmousedown="event.preventDefault()" onclick="formatDoc('insertOrderedList')" class="w-7 h-7 rounded-xl text-xs flex items-center justify-center cursor-pointer transition-colors text-zinc-700 hover:bg-zinc-200/70" title="Numbered List">
+            <span class="material-symbols-rounded text-sm">format_list_numbered</span>
+          </button>
+          <button id="btn-format-checklist" onmousedown="event.preventDefault()" onclick="insertChecklist()" class="w-7 h-7 rounded-xl text-xs flex items-center justify-center cursor-pointer transition-colors text-zinc-700 hover:bg-zinc-200/70" title="Checklist">
+            <span class="material-symbols-rounded text-sm">checklist</span>
+          </button>
+
+          <div class="w-[1px] h-5 bg-zinc-200 mx-0.5"></div>
+
+          
+          <!-- Color Popover Trigger -->
+          <div class="relative">
+            <button onclick="toggleColorPicker()" class="flex items-center gap-1 px-2 py-1 rounded-xl bg-white border border-zinc-200/80 hover:bg-zinc-100 text-xs font-medium text-zinc-700 shadow-2xs cursor-pointer" title="Color & Highlight">
+              <span id="active-color-dot" class="w-3 h-3 rounded-full border border-black/20 bg-zinc-900"></span>
+              <span class="text-[10px] font-bold">Color</span>
+            </button>
+
+            <div id="color-picker-popover" class="absolute left-0 top-full mt-1.5 p-3 bg-white rounded-2xl shadow-xl border border-zinc-200 z-30 w-56 space-y-3 hidden">
+              <div>
+                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1.5">Text Color</span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="applyTextColor('#111827')" class="w-6 h-6 rounded-full border border-black/10 bg-[#111827] cursor-pointer"></button>
+                  <button onclick="applyTextColor('#2563eb')" class="w-6 h-6 rounded-full border border-black/10 bg-[#2563eb] cursor-pointer"></button>
+                  <button onclick="applyTextColor('#059669')" class="w-6 h-6 rounded-full border border-black/10 bg-[#059669] cursor-pointer"></button>
+                  <button onclick="applyTextColor('#dc2626')" class="w-6 h-6 rounded-full border border-black/10 bg-[#dc2626] cursor-pointer"></button>
+                  <button onclick="applyTextColor('#d97706')" class="w-6 h-6 rounded-full border border-black/10 bg-[#d97706] cursor-pointer"></button>
+                  <button onclick="applyTextColor('#7c3aed')" class="w-6 h-6 rounded-full border border-black/10 bg-[#7c3aed] cursor-pointer"></button>
+                </div>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1.5">Highlighter</span>
+                <div class="flex items-center gap-1.5">
+                  <button onclick="applyHighlightColor('#fef08a')" class="w-6 h-6 rounded-lg border border-zinc-300 bg-[#fef08a] cursor-pointer" title="Yellow"></button>
+                  <button onclick="applyHighlightColor('#bbf7d0')" class="w-6 h-6 rounded-lg border border-zinc-300 bg-[#bbf7d0] cursor-pointer" title="Mint"></button>
+                  <button onclick="applyHighlightColor('#fbcfe8')" class="w-6 h-6 rounded-lg border border-zinc-300 bg-[#fbcfe8] cursor-pointer" title="Pink"></button>
+                  <button onclick="applyHighlightColor('#bae6fd')" class="w-6 h-6 rounded-lg border border-zinc-300 bg-[#bae6fd] cursor-pointer" title="Sky"></button>
+                  <button onclick="applyHighlightColor('transparent')" class="w-6 h-6 rounded-lg border border-zinc-300 flex items-center justify-center text-[10px] font-bold cursor-pointer" title="Clear">✕</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-[1px] h-5 bg-zinc-200 mx-0.5"></div>
+
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('undo')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer" title="Undo">
+            <span class="material-symbols-rounded text-sm">undo</span>
+          </button>
+          <button onmousedown="event.preventDefault()" onclick="formatDoc('redo')" class="w-7 h-7 rounded-xl hover:bg-zinc-200/70 text-zinc-700 text-xs flex items-center justify-center cursor-pointer" title="Redo">
+            <span class="material-symbols-rounded text-sm">redo</span>
+          </button>
+        </div>
+
+        <!-- 1. GOOGLE DOCS-STYLE FLOATING SELECTION PILL -->
+  <div id="floating-annotate-bar" class="hidden fixed z-50 -translate-y-full mb-2 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-zinc-200/90 p-1 flex items-center gap-1 select-none transition-all duration-150">
+    <button type="button" onmousedown="event.preventDefault()" onclick="openFloatingCommentInput()" class="h-8 px-3 rounded-xl hover:bg-zinc-100 text-xs font-bold text-zinc-800 flex items-center gap-1.5 cursor-pointer transition-all active:scale-95">
+      <span class="material-symbols-rounded text-base text-amber-500">add_comment</span>
+      <span>Add Annotation</span>
+    </button>
+  </div>
+
+  <!-- 2. DRAGGABLE ANNOTATION CREATION CARD -->
+  <div id="floating-comment-card" class="hidden fixed z-50 w-84 bg-white rounded-2xl shadow-2xl border border-zinc-200 p-3.5 space-y-3 select-none">
+    <div class="drag-handle flex items-center justify-between pb-2 border-b border-zinc-100 cursor-grab active:cursor-grabbing">
+      <div class="flex items-center gap-1.5 text-xs font-bold text-zinc-700">
+        <span class="material-symbols-rounded text-base text-amber-500">rate_review</span>
+        <span>New Annotation</span>
+      </div>
+      <button type="button" onmousedown="event.preventDefault()" onclick="closeFloatingCommentCard()" class="w-6 h-6 rounded-lg hover:bg-zinc-100 flex items-center justify-center text-zinc-400 hover:text-zinc-700 cursor-pointer">
+        ✕
+      </button>
+    </div>
+
+    <textarea 
+      id="floating-comment-textarea" 
+      rows="2" 
+      placeholder="Type your annotation here... (Enter to save)" 
+      class="w-full bg-zinc-50 border border-zinc-200/90 rounded-xl p-3 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:bg-white focus:border-zinc-400 resize-none transition-colors leading-relaxed select-text" 
+      onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); confirmFloatingAnnotation(); }"
+    ></textarea>
+
+    <div class="flex items-center justify-between pt-0.5">
+      <span class="text-[11px] text-zinc-400 font-medium">↵ Enter to save</span>
+      <div class="flex items-center gap-1.5">
+        <button type="button" onmousedown="event.preventDefault()" onclick="closeFloatingCommentCard()" class="px-3 py-1.5 text-xs font-bold text-zinc-500 hover:text-zinc-800 cursor-pointer rounded-xl hover:bg-zinc-100 transition-colors">Cancel</button>
+        <button type="button" onmousedown="event.preventDefault()" onclick="confirmFloatingAnnotation()" class="px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer transition-all">Annotate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DRAGGABLE ANNOTATION VIEW CARD -->
+  <div id="floating-annotation-view" class="hidden fixed z-50 w-80 bg-white rounded-2xl shadow-2xl border border-zinc-200 p-3.5 space-y-2.5 select-none">
+    <div class="drag-handle flex items-center justify-between pb-2 border-b border-zinc-100 cursor-grab active:cursor-grabbing">
+      <div class="flex items-center gap-1.5 text-xs font-bold text-zinc-800">
+        <span class="material-symbols-rounded text-base text-amber-500">push_pin</span>
+        <span>Annotation</span>
+      </div>
+      <span id="view-card-pin-indicator" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md hidden">Pinned</span>
+    </div>
+
+    <p id="view-card-comment-text" class="text-sm text-zinc-800 leading-relaxed bg-zinc-50 p-3 rounded-xl border border-zinc-100/90 break-words select-text"></p>
+
+    <div class="flex items-center justify-between pt-1 border-t border-zinc-100 text-xs">
+      <button type="button" id="btn-view-toggle-pin" onclick="handlePinActiveAnnotation()" class="text-zinc-600 hover:text-zinc-900 font-bold flex items-center gap-1.5 cursor-pointer hover:bg-zinc-100 px-2.5 py-1 rounded-xl transition-colors">
+        <span class="material-symbols-rounded text-base">push_pin</span>
+        <span class="pin-text">Pin</span>
+      </button>
+      <button type="button" onclick="handleDeleteActiveAnnotation()" class="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1.5 cursor-pointer hover:bg-rose-50 px-2.5 py-1 rounded-xl transition-colors">
+        <span class="material-symbols-rounded text-base">delete</span>
+        <span>Remove</span>
+      </button>
+    </div>
+  </div>
+
+        <!-- 4. FIXED NOTE TITLE -->
+        <input type="text" id="editor-note-title" placeholder="Note Title..." class="text-3xl font-black text-zinc-900 w-full border-none focus:outline-none placeholder-zinc-300 pt-1 flex-shrink-0 bg-transparent">
+
+        <!-- 5. SCROLLABLE NOTE CONTENT WRAPPER -->
+        <div class="flex-1 min-h-0 overflow-y-auto pr-1">
+          <div id="editor-canvas" contenteditable="true" data-placeholder="Start typing your ideas and notes here..." oninput="handleEditorInput()" class="w-full min-h-full text-zinc-700 leading-relaxed focus:outline-none text-base border-none outline-none font-sans pb-16"></div>
+        </div>
+
+        
+      </div>
+
+      <!-- VIEW 4: PERSONALIZATION -->
+      <div id="view-personalization" class="space-y-6 hidden pb-10">
+        <!-- Top Points & Status Card -->
+        <div class="flex items-center justify-between bg-white rounded-3xl p-6 border border-zinc-200/80 shadow-xs">
+          <div>
+            <h1 class="text-2xl font-black tracking-tight text-zinc-900">Personalization &amp; Store</h1>
+            <p class="text-xs text-zinc-400 mt-0.5">Customize workspace colors, ambient artwork, and eye-friendly fonts with earned points.</p>
+          </div>
+          <div class="flex items-center gap-2 bg-zinc-50 px-4 py-2.5 rounded-2xl border border-zinc-200/70 shadow-2xs">
+            <span class="material-symbols-rounded text-lg text-amber-500 fill-1">military_tech</span>
+            <span class="font-bold text-sm text-zinc-900"><span class="points-display">0</span> points</span>
+          </div>
+        </div>
+
+        <!-- 1. BASICS: SOLID MINIMALIST THEMES (50 pts) -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+              <h2 class="text-base font-bold text-zinc-900">Basic Palettes</h2>
+            </div>
+            
+          </div>
+          <div id="themes-basic-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+        <!-- 2. ARTWORK THEMES (100 pts) -->
+       <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+              <h2 class="text-base font-bold text-zinc-900">Artwork &amp; Patterns</h2>
+            </div>
+          </div>
+          <div id="themes-artwork-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+        <!-- 3. ANIMATED AMBIENT THEMES (200 pts) -->
+      <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+              <h2 class="text-base font-bold text-zinc-900">Animated Focus Ambience</h2>
+            </div>
+          </div>
+          <div id="themes-animated-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+
+        <!-- 4. LOW-STRESS FONTS (70 pts) -->
+        <div class="space-y-3 pt-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              <h2 class="text-base font-bold text-zinc-900">Eye-Friendly Fonts</h2>
+            </div>
+            
+          </div>
+          <div id="fonts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- 5. SYSTEM SETTINGS -->
+        <div class="space-y-3 pt-2">
+          <h2 class="text-base font-bold text-zinc-900">System Features</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Dark Mode Toggle -->
+            <div class="bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-xs flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-zinc-900 text-sm flex items-center gap-1.5">
+                  <span class="material-symbols-rounded text-base text-zinc-700">dark_mode</span>
+                  <span>Dark Mode</span>
+                </h3>
+                <p class="text-xs text-zinc-400">Deep slate matte contrast for Monochrome.</p>
+              </div>
+              <button id="feature-dark-toggle" onclick="toggleDarkMode()" class="w-12 h-6 rounded-full transition-colors relative p-0.5 bg-zinc-300 cursor-pointer flex-shrink-0">
+                <div class="w-5 h-5 rounded-full bg-white transition-transform translate-x-0 shadow-xs"></div>
+              </button>
+            </div>
+            <div class="bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-xs flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-zinc-900 text-sm">Games</h3>
+                <p class="text-xs text-zinc-400">Rest-break games after focus sprints.</p>
+              </div>
+              <button id="feature-games-toggle" onclick="toggleSystemFeature('games')" class="w-12 h-6 rounded-full transition-colors relative p-0.5 bg-zinc-900 cursor-pointer">
+                <div class="w-5 h-5 rounded-full bg-white transition-transform translate-x-6"></div>
+              </button>
+            </div>
+
+            <div class="bg-white rounded-3xl p-5 border border-zinc-200/80 shadow-xs flex items-center justify-between">
+              <div>
+                <h3 class="font-bold text-zinc-900 text-sm">Session Timer Widget</h3>
+                <p class="text-xs text-zinc-400">Display widget on dashboard and calendar.</p>
+              </div>
+              <button id="feature-timer-toggle" onclick="toggleSystemFeature('timer')" class="w-12 h-6 rounded-full transition-colors relative p-0.5 bg-zinc-900 cursor-pointer">
+                <div class="w-5 h-5 rounded-full bg-white transition-transform translate-x-6"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 1. SESSION TIMER MODAL -->
+  <div id="modal-timer" class="fixed inset-0 z-50 bg-black/45 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-[#fcfdff] rounded-2xl max-w-[420px] w-full p-6 shadow-2xl space-y-4 relative text-[#0f1a33]">
+      <div class="flex items-start justify-between">
+        <div>
+          <h3 class="text-xl font-bold tracking-tight text-[#0f1a33]">Timer</h3>
+          <p class="text-xs text-[#6b7a99] mt-0.5">Configure duration and rules for focus mode</p>
+        </div>
+        <button onclick="closeTimerModal()" class="w-7 h-7 rounded-full bg-[#e9ecf2] hover:bg-[#dde1ea] flex items-center justify-center text-zinc-600 transition-colors cursor-pointer text-base">
+          ✕
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center justify-center py-1">
+        <div class="w-28 h-28 rounded-full border-4 border-[#0a6cff] flex flex-col items-center justify-center">
+          <span id="modal-target-time-display" class="text-2xl font-bold tracking-tight text-[#0f1a33] font-mono">25:00</span>
+          <span class="text-[9px] font-bold text-[#6b7a99] tracking-wider uppercase mt-0.5">SET TARGET</span>
+        </div>
+      </div>
+
+      <div class="space-y-0.5">
+        <h4 class="font-bold text-sm text-[#0f1a33]">Pomodoro</h4>
+        <p id="pomodoro-desc-text" class="text-xs text-[#6b7a99]">Work in focused 25-minute blocks with 5-minute breaks.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <div class="bg-[#f9fbff] p-3 rounded-xl border border-[#dfe5f0] space-y-2">
+          <span class="text-[10px] font-bold text-[#6b7a99] uppercase tracking-wider block">POMODORO DURATION</span>
+          <div class="flex items-center justify-between">
+            <button id="btn-step-focus-dec" type="button" class="w-7 h-7 rounded-lg bg-white border border-[#dfe5f0] hover:bg-[#eef3ff] text-zinc-800 font-bold flex items-center justify-center text-sm cursor-pointer select-none">−</button>
+            <input type="number" id="focus-duration-input" value="25" min="1" max="120" oninput="handleFocusInput(this.value)" onblur="clampFocusInput(this)" class="w-12 text-center font-bold text-base text-[#0f1a33] font-mono bg-white border border-[#dfe5f0] rounded-lg py-0.5 focus:outline-none focus:border-[#0a6cff]" onclick="this.select()">
+            <button id="btn-step-focus-inc" type="button" class="w-7 h-7 rounded-lg bg-white border border-[#dfe5f0] hover:bg-[#eef3ff] text-zinc-800 font-bold flex items-center justify-center text-sm cursor-pointer select-none">+</button>
+            <span class="text-[11px] text-[#6b7a99]">min</span>
+          </div>
+        </div>
+
+        <div class="bg-[#f9fbff] p-3 rounded-xl border border-[#dfe5f0] space-y-2">
+          <span class="text-[10px] font-bold text-[#6b7a99] uppercase tracking-wider block">SHORT BREAK</span>
+          <div class="flex items-center justify-between">
+            <button id="btn-step-brk-dec" type="button" class="w-7 h-7 rounded-lg bg-white border border-[#dfe5f0] hover:bg-[#eef3ff] text-zinc-800 font-bold flex items-center justify-center text-sm cursor-pointer select-none">−</button>
+            <input type="number" id="break-duration-input" value="5" min="1" max="60" oninput="handleBreakInput(this.value)" onblur="clampBreakInput(this)" class="w-12 text-center font-bold text-base text-[#0f1a33] font-mono bg-white border border-[#dfe5f0] rounded-lg py-0.5 focus:outline-none focus:border-[#0a6cff]" onclick="this.select()">
+            <button id="btn-step-brk-inc" type="button" class="w-7 h-7 rounded-lg bg-white border border-[#dfe5f0] hover:bg-[#eef3ff] text-zinc-800 font-bold flex items-center justify-center text-sm cursor-pointer select-none">+</button>
+            <span class="text-[11px] text-[#6b7a99]">min</span>
+          </div>
+        </div>
+
+        <div class="bg-[#f9fbff] p-3 rounded-xl border border-[#dfe5f0] flex items-center justify-between gap-2">
+          <div class="space-y-0.5">
+            <p class="font-semibold text-xs text-[#0f1a33] leading-tight">Auto Start Pomodoros</p>
+            <p class="text-[10px] text-[#6b7a99] leading-snug">Automatically start the next Pomodoro after a break.</p>
+          </div>
+          <button id="toggle-auto-focus" type="button" onclick="toggleAutoSetting('autoFocus')" class="w-10 h-6 rounded-full transition-colors relative p-0.5 flex-shrink-0 cursor-pointer bg-blue-600">
+            <div class="w-5 h-5 rounded-full bg-white transition-transform shadow-xs translate-x-4"></div>
+          </button>
+        </div>
+
+        <div class="bg-[#f9fbff] p-3 rounded-xl border border-[#dfe5f0] flex items-center justify-between gap-2">
+          <div class="space-y-0.5">
+            <p class="font-semibold text-xs text-[#0f1a33] leading-tight">Auto Start Breaks</p>
+            <p class="text-[10px] text-[#6b7a99] leading-snug">Automatically start the break when a Pomodoro ends.</p>
+          </div>
+          <button id="toggle-auto-break" type="button" onclick="toggleAutoSetting('autoBreak')" class="w-10 h-6 rounded-full transition-colors relative p-0.5 flex-shrink-0 cursor-pointer bg-blue-600">
+            <div class="w-5 h-5 rounded-full bg-white transition-transform shadow-xs translate-x-4"></div>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="closeTimerModal()" class="py-2.5 rounded-xl text-sm font-semibold border border-[#dfe5f0] bg-white hover:bg-zinc-50 text-zinc-700 transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button onclick="savePomodoroSettings()" class="py-2.5 rounded-xl text-sm font-semibold bg-[#262b33] hover:bg-zinc-900 text-white shadow-xs transition-colors cursor-pointer">
+          Save Timer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ADD TASK MODAL -->
+  <div id="modal-task" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl space-y-5">
+    <div class="flex items-center justify-between pb-1">
+      <div class="flex items-center gap-2 text-zinc-900 font-bold text-sm">
+        <span class="material-symbols-rounded text-lg">add_task</span>
+        <span>Add New Task</span>
+      </div>
+      <button onclick="closeTaskModal()" class="text-zinc-400 hover:text-zinc-700 cursor-pointer">✕</button>
+    </div>
+
+    <!-- Task Title -->
+    <div class="space-y-1.5">
+      <div class="flex items-center justify-between">
+        <label class="text-xs font-semibold text-zinc-600 flex items-center gap-1.5">
+          <span>Task Title</span>
+          <span class="text-rose-500 font-semibold text-[11px]">(Required)</span>
+        </label>
+        <span id="task-title-error" class="text-[11px] font-semibold text-rose-500 items-center gap-1 hidden">Please enter a task title</span>
+      </div>
+      <input type="text" id="new-task-title-input" placeholder="Review presentation slides" oninput="clearTaskTitleError()" class="w-full bg-white border border-zinc-200 rounded-2xl px-4 py-3 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400 transition-colors">
+    </div>
+
+    <!-- Task Category -->
+    <div class="space-y-1.5">
+      <div class="flex items-center justify-between">
+        <label class="text-xs font-semibold text-zinc-600">Task Type / Category</label>
+        <button type="button" onclick="toggleAddCustomType()" class="text-[11px] font-bold text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">+ Custom Type</button>
+      </div>
+      <div id="custom-type-input-bar" class="flex items-center gap-2 p-1.5 bg-zinc-50 border border-zinc-200 rounded-xl hidden">
+        <input type="text" id="custom-type-name-input" placeholder="e.g. Project, Fitness..." class="flex-1 bg-white border border-zinc-200 rounded-lg px-2.5 py-1 text-xs text-zinc-800 focus:outline-none" onkeydown="if(event.key==='Enter') submitCustomType();">
+        <button type="button" onclick="submitCustomType()" class="bg-zinc-900 text-white text-xs font-bold px-3 py-1 rounded-lg cursor-pointer">Add</button>
+      </div>
+      <div id="task-type-pills" class="flex flex-wrap gap-1.5"></div>
+    </div>
+
+    <!-- Date & Time -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="space-y-1.5">
+        <label class="text-xs font-semibold text-zinc-600">Due Date</label>
+        <input type="date" id="new-task-due-date" onchange="autoEvaluateModalPriority()" class="w-full bg-white border border-zinc-200 rounded-2xl px-3 py-2.5 text-xs font-medium text-zinc-800 focus:outline-none cursor-pointer">
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-xs font-semibold text-zinc-600">Time</label>
+        <div class="flex items-center gap-1.5">
+          <div class="flex-1 bg-white border border-zinc-200 rounded-2xl px-2.5 py-2 text-xs font-bold text-zinc-800 flex items-center justify-center gap-1 min-w-0">
+            <input type="text" id="new-task-hour" maxlength="2" value="10" class="w-7 text-center bg-transparent focus:outline-none font-bold">
+            <span class="text-zinc-400 font-bold select-none">:</span>
+            <input type="text" id="new-task-minute" maxlength="2" value="30" class="w-7 text-center bg-transparent focus:outline-none font-bold">
+          </div>
+          <select id="new-task-ampm" class="bg-white border border-zinc-200 rounded-2xl px-2.5 py-2 text-xs font-bold text-zinc-800 focus:outline-none cursor-pointer shadow-2xs">
+            <option value="AM" selected>AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Priority Level with Auto-Badge -->
+    <div class="space-y-1.5">
+      <div class="flex items-center justify-between">
+        <label class="text-xs font-semibold text-zinc-600">Priority Level</label>
+        <span id="auto-priority-badge" class="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full hidden items-center gap-1">
+          ⚡ Auto-set to High (Due soon)
+        </span>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <button type="button" id="priority-btn-low" onclick="setTaskPriority('Low')" class="priority-btn py-2 px-3 rounded-2xl text-xs font-bold border border-zinc-200 bg-zinc-50 text-zinc-600 flex items-center justify-center gap-1.5 cursor-pointer transition-all">Low</button>
+        <button type="button" id="priority-btn-medium" onclick="setTaskPriority('Medium')" class="priority-btn py-2 px-3 rounded-2xl text-xs font-bold border border-amber-400 bg-amber-50 text-amber-900 flex items-center justify-center gap-1.5 cursor-pointer transition-all">Medium</button>
+        <button type="button" id="priority-btn-high" onclick="setTaskPriority('High')" class="priority-btn py-2 px-3 rounded-2xl text-xs font-bold border border-zinc-200 bg-zinc-50 text-zinc-600 flex items-center justify-center gap-1.5 cursor-pointer transition-all">High</button>
+      </div>
+    </div>
+
+    <!-- Email Reminder Option -->
+    <div class="pt-1">
+      <label class="flex items-center gap-2 cursor-pointer select-none">
+        <input type="checkbox" id="new-task-email-reminder" checked class="w-4 h-4 rounded border-zinc-300 accent-zinc-900 cursor-pointer">
+        <span class="text-xs text-zinc-600 font-medium">Send email reminder when deadline is close</span>
+      </label>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 pt-2">
+      <button type="button" onclick="closeTaskModal()" class="py-3 rounded-2xl text-sm font-bold border border-zinc-200 hover:bg-zinc-50 text-zinc-700 transition-colors cursor-pointer">Cancel</button>
+      <button type="button" onclick="submitNewTask()" class="py-3 rounded-2xl text-sm font-bold bg-zinc-900 hover:bg-zinc-800 text-white shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">Add Task</button>
+    </div>
+  </div>
+</div>
+
+  <!-- 3. LOGOUT MODAL -->
+  <div id="modal-logout" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 relative">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold text-zinc-900 tracking-tight">Logout?</h3>
+        <button onclick="closeLogoutModal()" class="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-500 cursor-pointer">✕</button>
+      </div>
+      <p class="text-sm text-zinc-500 leading-relaxed">You'll be signed out of this account. You can sign back in whenever you're ready.</p>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="closeLogoutModal()" class="py-2.5 rounded-2xl text-sm font-semibold border border-zinc-200 hover:bg-zinc-50 text-zinc-800 cursor-pointer">Stay signed in</button>
+        <button onclick="confirmLogout()" class="py-2.5 rounded-2xl text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 text-white cursor-pointer">Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. BREAK EARNED MODAL -->
+  <div id="modal-break" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl space-y-5 text-center">
+      <div class="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center mx-auto text-3xl">🏆</div>
+      <div class="inline-block bg-blue-50 text-blue-800 font-bold text-xs px-3.5 py-1.5 rounded-full">⚡ Break Earned</div>
+      <div class="space-y-1.5">
+        <h3 class="text-lg font-bold text-zinc-900">Use your rest time to play a game?</h3>
+        <p class="text-xs text-zinc-500 leading-relaxed max-w-xs mx-auto">A quick micro-game can clear your cognitive load and boost creative recovery before your next sprint.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="closeBreakModal()" class="py-3 rounded-2xl text-xs font-bold border border-zinc-200 hover:bg-zinc-50 text-zinc-700 cursor-pointer transition-colors">No, just rest</button>
+        <a href="GameMenu.html" class="py-3 rounded-2xl text-xs font-bold bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center cursor-pointer transition-colors">Yes, choose a game</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. REDEEM REWARD MODAL -->
+  <div id="modal-redeem" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 relative">
+      <div class="flex items-start justify-between">
+        <div>
+          <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Redeem Reward</span>
+          <h3 class="text-xl font-black text-zinc-900 tracking-tight">Ready to redeem?</h3>
+        </div>
+        <button onclick="closeRedeemModal()" class="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-500 cursor-pointer">✕</button>
+      </div>
+      <p id="redeem-modal-desc" class="text-sm text-zinc-600">You are redeeming points.</p>
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <button onclick="closeRedeemModal()" class="py-2.5 rounded-2xl text-sm font-semibold border border-zinc-200 hover:bg-zinc-50 text-zinc-800 cursor-pointer">Earn more</button>
+        <button onclick="confirmRedeemItem()" class="py-2.5 rounded-2xl text-sm font-semibold bg-zinc-900 hover:bg-zinc-800 text-white cursor-pointer">Redeem now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. CREATE NOTE MODAL -->
+  <div id="modal-create-note" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-zinc-900">Create New Note</h3>
+        <button onclick="closeCreateNoteModal()" class="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center text-zinc-500 cursor-pointer">✕</button>
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-xs font-semibold text-zinc-600">Title</label>
+        <input type="text" id="modal-quick-note-title" placeholder="e.g. Science notes, meeting recap..." class="w-full bg-white border border-zinc-200 rounded-2xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none focus:border-zinc-400" onkeydown="if(event.key==='Enter') submitQuickNote();">
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button onclick="closeCreateNoteModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-600 hover:bg-zinc-100 cursor-pointer">Cancel</button>
+        <button onclick="submitQuickNote()" class="px-4 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800 cursor-pointer">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Folder Delete Confirmation Modal -->
+<div id="modal-delete-folder" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+    <h3 class="text-xl font-black text-zinc-900 tracking-tight">Delete Folder?</h3>
+    <p id="delete-folder-modal-text" class="text-sm text-zinc-600 leading-relaxed"></p>
+    <div class="grid grid-cols-2 gap-3 pt-2">
+      <button onclick="closeDeleteFolderModal()" class="py-2.5 rounded-2xl text-sm font-semibold border border-zinc-200 hover:bg-zinc-50 text-zinc-800 cursor-pointer">Cancel</button>
+      <button onclick="confirmDeleteFolder()" class="py-2.5 rounded-2xl text-sm font-semibold bg-rose-600 hover:bg-rose-700 text-white cursor-pointer">Delete Folder</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create New Folder Modal -->
+<div id="modal-create-folder" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-bold text-zinc-900">Create New Folder</h3>
+      <button onclick="closeCreateFolderModal()" class="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-500 cursor-pointer">✕</button>
+    </div>
+    <div class="space-y-1.5">
+      <label class="text-xs font-semibold text-zinc-600">Folder Name</label>
+      <input type="text" id="modal-folder-name" placeholder="Folder Name..." class="w-full bg-white border border-zinc-200 rounded-2xl px-4 py-2.5 text-sm text-zinc-900 focus:outline-none" onkeydown="if(event.key==='Enter') submitCreateFolder();">
+    </div>
+    <div class="flex items-center justify-end gap-2 pt-2">
+      <button onclick="closeCreateFolderModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-600 hover:bg-zinc-100 cursor-pointer">Cancel</button>
+      <button onclick="submitCreateFolder()" class="px-4 py-2 rounded-xl text-xs font-bold bg-zinc-900 text-white hover:bg-zinc-800 cursor-pointer">Create</button>
+    </div>
+  </div>
+</div>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toast-notification" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 bg-zinc-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-semibold transition-all duration-300 transform pointer-events-none -translate-y-16 opacity-0">
+    <span id="toast-text">New note created.</span>
+  </div>
+
+  <!-- External Script File -->
+  <script src="main-page-script.js"></script>
+</body>
+</html>

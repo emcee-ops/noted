@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu - Noted</title>
+    
+    <!-- Google Fonts for Personalization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Comfortaa:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="stylesheet" href="GameMenuStyle.css">
+
+    <!-- Instant Pre-render Theme Engine -->
+    <script>
+      (function() {
+        const theme = localStorage.getItem('noted_active_theme') || 'monochrome';
+        const font = localStorage.getItem('noted_active_font') || 'font-app-default';
+        const isDark = localStorage.getItem('noted_dark_mode') === 'true';
+
+        const themeClassMap = {
+          'monochrome': 'theme-monochrome',
+          'golden': 'theme-golden',
+          'skyblue': 'theme-skyblue',
+          'violet': 'theme-violet',
+          'art-studio': 'bg-art-studio',
+          'art-kyoto': 'bg-art-kyoto',
+          'art-pines': 'bg-art-pines',
+          'art-celestial': 'bg-art-celestial',
+          'anim-aurora': 'bg-animated-aurora',
+          'anim-twilight': 'bg-animated-twilight',
+          'anim-ocean': 'bg-animated-ocean',
+          'anim-nebula': 'bg-animated-nebula'
+        };
+
+        const docEl = document.documentElement;
+        if (isDark) docEl.classList.add('dark-theme');
+        if (font) docEl.classList.add(font);
+        if (themeClassMap[theme]) docEl.classList.add(themeClassMap[theme]);
+      })();
+    </script>
+</head>
+<body id="game-menu-body">
+    <a href="noted_website.html" class="logo">
+        <img src="noted-logo-icon.png" alt="Noted">
+        <b><p class="logo-text">noted</p></b>
+    </a>
+
+    <div class="container">
+        <header>
+            <h1 class="page-title">Choose a Quick Game</h1>
+            <h2 class="page-subtitle">Pick an activity to reset your mind. Your break timer will continue.</h2>
+        </header>
+
+        <div class="main-panel">
+            <div class="games-grid">
+                <!-- TicTacToe Card -->
+                <div class="game-card">
+                    <div class="card-image-wrapper">
+                        <a href="TicTacToe/TicTacToe.html"><img src="Assets/TicTacToeGame.png" alt="Tic Tac Toe"></a>
+                    </div>
+                    <div class="card-content">
+                        <a href="TicTacToe/TicTacToe.html">TicTacToe</a>
+                        <p>A game of X's and O's, making a line of 3 X's in a row wins you the round.</p>
+                    </div>
+                </div>
+
+                <!-- Wordle Card -->
+                <div class="game-card">
+                    <div class="card-image-wrapper">
+                        <a href="Wordle/Wordle.html"><img src="Assets/WordleGame.png" alt="Wordle"></a>
+                    </div>
+                    <div class="card-content">
+                        <a href="Wordle/Wordle.html">Wordle</a>
+                        <p>Guess the five letter word using the clues given. Green for correct placement, yellow for misplaced, grey for incorrect.</p>
+                    </div>
+                </div>
+
+                <!-- RockPaperScissors Card -->
+                <div class="game-card">
+                    <div class="card-image-wrapper">
+                        <a href="RockPaperScissor/RockPaperScissor.html"><img src="Assets/RockPaperScissorsGame.png" alt="Rock Paper Scissors"></a>
+                    </div>
+                    <div class="card-content">
+                        <a href="RockPaperScissor/RockPaperScissor.html">RockPaperScissor</a>
+                        <p>A game of chance, first to three wins the game. Rock beats Scissors, Scissors beats Paper, and Paper beats Rock.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="dashboard-container">
+                <h2>Not in the mood?</h2> 
+                <a href="noted_website.html" class="dashboard">Skip games &amp; rest quietly</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

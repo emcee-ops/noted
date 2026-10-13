@@ -1,0 +1,579 @@
+/* ==========================================================================
+   Base Styles & Iconography
+   ========================================================================== */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded', sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+html.dark-theme img[src*="noted-logo-icon.png"],
+body.dark-theme img[src*="noted-logo-icon.png"] {
+  filter: brightness(0) invert(1) !important;
+  transition: filter 0.3s ease;
+}
+
+/* ==========================================================================
+   DARK MODE HIGH-CONTRAST HOVER ENGINE
+   ========================================================================== */
+
+/* 1. Turn text and icons pitch black on hover across all interactive elements */
+html.dark-theme button:hover,
+html.dark-theme a:hover,
+html.dark-theme .cursor-pointer:hover,
+body.dark-theme button:hover,
+body.dark-theme a:hover,
+body.dark-theme .cursor-pointer:hover {
+  color: #000000 !important;
+}
+
+/* Ensure nested spans, headings, and material icons also flip to black */
+html.dark-theme button:hover *,
+html.dark-theme a:hover *,
+html.dark-theme .cursor-pointer:hover *,
+body.dark-theme button:hover *,
+body.dark-theme a:hover *,
+body.dark-theme .cursor-pointer:hover * {
+  color: #000000 !important;
+}
+
+/* 2. Illuminate hover background to crisp off-white for sharp contrast */
+html.dark-theme nav button:hover,
+html.dark-theme #account-popover-menu button:hover,
+html.dark-theme #sidebar-notes-container button:hover,
+html.dark-theme .list-dropdown-menu button:hover,
+html.dark-theme [id^="btn-format"]:hover,
+body.dark-theme nav button:hover,
+body.dark-theme #account-popover-menu button:hover,
+body.dark-theme #sidebar-notes-container button:hover,
+body.dark-theme .list-dropdown-menu button:hover,
+body.dark-theme [id^="btn-format"]:hover {
+  background-color: #f4f4f5 !important; /* bright zinc-100 */
+}
+
+/* 3. Account Card & Dashboard Widget hover states */
+html.dark-theme #user-profile-pill-btn:hover,
+html.dark-theme #dash-timer-widget:hover,
+body.dark-theme #user-profile-pill-btn:hover,
+body.dark-theme #dash-timer-widget:hover {
+  background-color: #ffffff !important;
+  border-color: #e4e4e7 !important;
+}
+
+html.dark-theme #user-profile-pill-btn:hover p,
+html.dark-theme #user-profile-pill-btn:hover span,
+body.dark-theme #user-profile-pill-btn:hover p,
+body.dark-theme #user-profile-pill-btn:hover span {
+  color: #000000 !important;
+}
+
+/* 4. Safety Override: Keep destructive (logout/delete) actions readable in red */
+html.dark-theme button:hover .text-rose-500,
+html.dark-theme button:hover .text-rose-600,
+html.dark-theme button.text-rose-600:hover,
+body.dark-theme button:hover .text-rose-500,
+body.dark-theme button:hover .text-rose-600,
+body.dark-theme button.text-rose-600:hover {
+  color: #e11d48 !important; /* rose-600 */
+  background-color: #ffe4e6 !important; /* rose-100 */
+}
+
+/* Material symbol fill variant for filled badges */
+.fill-1 {
+  font-variation-settings: 'FILL' 1;
+}
+
+/* ==========================================================================
+   Rich Text Editor Fonts
+   ========================================================================== */
+.font-serif-editor {
+  font-family: 'Newsreader', Georgia, serif;
+}
+
+.font-mono-editor {
+  font-family: 'JetBrains Mono', Menlo, Monaco, monospace;
+}
+
+.font-script-editor {
+  font-family: 'Caveat', cursive;
+}
+
+/* ==========================================================================
+   Editor Canvas Placeholder & Checklist
+   ========================================================================== */
+#editor-canvas:empty:before {
+  content: attr(data-placeholder);
+  color: #a1a1aa;
+  pointer-events: none;
+  display: block;
+}
+
+/* Ensure ordered and unordered lists render properly inside the editor */
+#editor-canvas ul {
+  list-style-type: disc !important;
+  margin-left: 1.5rem !important;
+  padding-left: 0.5rem !important;
+}
+
+#editor-canvas ol {
+  list-style-type: decimal !important;
+  margin-left: 1.5rem !important;
+  padding-left: 0.5rem !important;
+}
+
+#editor-canvas li {
+  display: list-item !important;
+  margin: 0.25rem 0 !important;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 0.25rem 0;
+}
+
+.checklist-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1.5px solid #d4d4d8;
+  border-radius: 0.35rem;
+  outline: none;
+  cursor: pointer;
+  margin-top: 0.2rem;
+  position: relative;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+  flex-shrink: 0;
+}
+
+.checklist-item input[type="checkbox"]:checked {
+  background-color: #18181b;
+  border-color: #18181b;
+}
+
+.checklist-item input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 0.32rem;
+  top: 0.12rem;
+  width: 0.32rem;
+  height: 0.6rem;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checklist-item.checked .checklist-content {
+  text-decoration: line-through;
+  color: #a1a1aa;
+}
+
+/* ==========================================================================
+   Custom Native Scrollbars
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d8;
+}
+
+.scrollbar-hover-only {
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hover-only:hover {
+  scrollbar-width: thin; /* Firefox */
+}
+
+.scrollbar-hover-only::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-hover-only::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.scrollbar-hover-only:hover::-webkit-scrollbar-thumb {
+  background-color: #d4d4d8; /* Tailwind zinc-300 */
+}
+
+/* ==========================================================================
+   Eye-Comfort Fonts & CSS Rules
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Comfortaa:wght@400;600;700&display=swap');
+
+.font-app-default {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+
+.font-app-humanist {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.font-app-editorial {
+  font-family: 'Lora', Georgia, serif !important;
+}
+
+.font-app-comfort {
+  font-family: 'Comfortaa', cursive !important;
+}
+
+.font-app-hyperlegible {
+  font-family: 'Atkinson Hyperlegible', sans-serif !important;
+}
+
+/* ==========================================================================
+   High-Visibility Animated Ambient Focus Themes
+   ========================================================================== */
+
+/* Motion Keyframes: Fluid diagonal and rotational wave drift */
+@keyframes ambientWave1 {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 50%;
+  }
+  50% {
+    background-position: 100% 50%, 0% 50%, 100% 0%;
+  }
+  100% {
+    background-position: 0% 0%, 100% 100%, 50% 50%;
+  }
+}
+
+@keyframes pulseGaze {
+  0%, 100% {
+    filter: saturate(1.15) contrast(1.02);
+  }
+  50% {
+    filter: saturate(1.35) contrast(1.08);
+  }
+}
+
+/* ==========================================================================
+   AUTHENTIC ARTWORK PATTERNS (ACTIVE BACKGROUND & CARD PREVIEWS)
+   ========================================================================== */
+
+/* 1. Blueprint Grid Studio */
+.bg-art-studio {
+  background-color: #0f172a !important;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
+}
+
+/* 2. Kyoto Sun Texture */
+.bg-art-kyoto {
+  background-color: #451a03 !important;
+  background-image: 
+    radial-gradient(#b45309 1.2px, transparent 1.2px),
+    radial-gradient(#d97706 1px, #451a03 1px) !important;
+  background-size: 16px 16px, 32px 32px !important;
+}
+
+/* 3. Nordic Forest Pines */
+.bg-art-pines {
+  background-color: #064e3b !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(16, 185, 129, 0.12) 0px,
+    rgba(16, 185, 129, 0.12) 2px,
+    transparent 2px,
+    transparent 10px
+  ) !important;
+}
+
+/* 4. Celestial Star Map (New Artwork Theme) */
+.bg-art-celestial {
+  background-color: #090d16 !important;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.9) 1px, transparent 1px),
+    radial-gradient(rgba(251, 191, 36, 0.6) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(96, 165, 250, 0.4) 1px, transparent 1px) !important;
+  background-size: 28px 28px, 48px 48px, 36px 36px !important;
+  background-position: 0 0, 14px 14px, 7px 7px !important;
+}
+
+/* ==========================================================================
+   ANIMATED AMBIENT FOCUS THEMES
+   ========================================================================== */
+@keyframes vibrantFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 1. Aurora Borealis: Vibrant Teal -> Neon Green -> Purple -> Royal Blue */
+.bg-animated-aurora {
+  background: linear-gradient(125deg, #06b6d4, #10b981, #a855f7, #3b82f6, #06b6d4) !important;
+  background-size: 400% 400% !important;
+  animation: vibrantFlow 2s ease infinite !important;
+}
+
+/* 2. Twilight Sunset: Neon Fuchsia -> Electric Violet -> Amber Flame -> Hot Pink */
+.bg-animated-twilight {
+  background: linear-gradient(125deg, #f43f5e, #8b5cf6, #f59e0b, #ec4899, #f43f5e) !important;
+  background-size: 400% 400% !important;
+  animation: vibrantFlow 1.5s ease infinite !important;
+}
+
+/* 3. Deep Sea Drift: Ocean Cyan -> Midnight Blue -> Emerald Abyss -> Electric Cobalt */
+.bg-animated-ocean {
+  background: linear-gradient(125deg, #0284c7, #1e1b4b, #0d9488, #2563eb, #0284c7) !important;
+  background-size: 400% 400% !important;
+  animation: vibrantFlow 2s ease infinite !important;
+}
+
+/* 4. Cosmic Nebula: Vivid Magenta -> Deep Indigo -> Purple Nova -> Violet Burst */
+.bg-animated-nebula {
+  background: linear-gradient(125deg, #d946ef, #312e81, #7c3aed, #db2777, #d946ef) !important;
+  background-size: 400% 400% !important;
+  animation: vibrantFlow 2s ease infinite !important;
+}
+
+/* Speeds up card preview banners slightly so motion is instantly noticeable */
+.animated-card-preview {
+  animation-duration: 4s !important;
+}
+
+/* ==========================================================================
+   Monochrome Dark Mode Styles (.dark-theme)
+   ========================================================================== */
+body.dark-theme {
+  background-color: #0d0f12 !important;
+  color: #f4f4f5 !important;
+}
+
+/* Header, Sidebar, and Main Cards */
+body.dark-theme header button,
+body.dark-theme aside#main-sidebar,
+body.dark-theme .bg-white {
+  background-color: #16181d !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #f4f4f5 !important;
+}
+
+/* Subtle surfaces (inputs, nested card pills, controls) */
+body.dark-theme .bg-zinc-50,
+body.dark-theme .bg-zinc-100,
+body.dark-theme .bg-zinc-50\/80,
+body.dark-theme .bg-zinc-50\/70,
+body.dark-theme select,
+body.dark-theme input {
+  background-color: #1f2229 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f4f4f5 !important;
+}
+
+/* Borders & Separators */
+body.dark-theme .border-zinc-100,
+body.dark-theme .border-zinc-200,
+body.dark-theme .border-zinc-200\/80,
+body.dark-theme .border-zinc-200\/90,
+body.dark-theme .border-zinc-200\/60,
+body.dark-theme .divide-zinc-50 > * {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* High-contrast headings & labels */
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme span.font-black,
+body.dark-theme .text-zinc-900,
+body.dark-theme .text-zinc-800 {
+  color: #fafafa !important;
+}
+
+body.dark-theme .text-zinc-700,
+body.dark-theme .text-zinc-600,
+body.dark-theme .text-zinc-500 {
+  color: #a1a1aa !important;
+}
+
+body.dark-theme .text-zinc-400 {
+  color: #71717a !important;
+}
+
+/* Primary buttons in dark mode invert cleanly */
+body.dark-theme .bg-zinc-900 {
+  background-color: #f4f4f5 !important;
+  color: #09090b !important;
+}
+
+body.dark-theme .bg-zinc-900:hover {
+  background-color: #e4e4e7 !important;
+}
+
+/* Note editor canvas text in Dark Mode */
+body.dark-theme #editor-canvas {
+  color: #e4e4e7 !important;
+}
+
+body.dark-theme #editor-canvas:empty:before {
+  color: #52525b !important;
+}
+
+
+/* ==========================================================================
+   Google Docs-Style Annotations & High Readability
+   ========================================================================== */
+
+/* Highlighted word/phrase in text */
+.annotated-word {
+  position: relative;
+  display: inline;
+  background-color: #fef08a; /* amber-200 */
+  color: #713f12;            /* amber-900 */
+  border-bottom: 2px solid #eab308; /* amber-500 */
+  border-radius: 4px;
+  padding: 1px 3px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.annotated-word:hover,
+.annotated-word.active-caret {
+  background-color: #fde047; /* amber-300 */
+  border-bottom-color: #ca8a04;
+}
+
+.annotated-word.pinned {
+  background-color: #e0e7ff; /* indigo-100 */
+  color: #312e81;            /* indigo-900 */
+  border-bottom: 2px solid #6366f1; /* indigo-500 */
+}
+
+/* Draggable handle cues */
+.drag-handle {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ==========================================================================
+   Dark Mode Adaptation for Annotations (.dark-theme)
+   ========================================================================== */
+body.dark-theme .annotated-word {
+  background-color: rgba(245, 158, 11, 0.25) !important;
+  color: #fef08a !important;
+  border-bottom-color: #f59e0b !important;
+}
+
+body.dark-theme .annotated-word:hover,
+body.dark-theme .annotated-word.active-caret {
+  background-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+body.dark-theme .annotated-word.pinned {
+  background-color: rgba(99, 102, 241, 0.3) !important;
+  color: #c7d2fe !important;
+  border-bottom-color: #818cf8 !important;
+}
+
+body.dark-theme #floating-annotate-bar,
+body.dark-theme #floating-comment-card,
+body.dark-theme #floating-annotation-view {
+  background-color: #1a1c23 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-theme #floating-comment-card .drag-handle,
+body.dark-theme #floating-annotation-view .drag-handle,
+body.dark-theme #floating-comment-card .border-t,
+body.dark-theme #floating-annotation-view .border-t {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme #floating-comment-textarea,
+body.dark-theme #view-card-comment-text {
+  background-color: #242731 !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #fafafa !important;
+}
+
+body.dark-theme #view-card-pin-indicator {
+  background-color: rgba(99, 102, 241, 0.2) !important;
+  color: #a5b4fc !important;
+}
+
+body.dark-theme #btn-view-toggle-pin {
+  color: #d4d4d8 !important;
+}
+
+body.dark-theme #btn-view-toggle-pin:hover {
+  background-color: #272a34 !important;
+  color: #ffffff !important;
+}
+
+/* Dark Mode support for Search Overlay */
+body.dark-theme #global-search-container > div,
+body.dark-theme #global-search-dropdown {
+  background-color: #16181d !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f4f4f5 !important;
+}
+
+body.dark-theme #global-search-dropdown .hover\:bg-zinc-50:hover {
+  background-color: #1f2229 !important;
+}
+
+body.dark-theme #global-search-dropdown .divide-zinc-50 > * {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Custom List Indentation & Display inside Contenteditable */
+[contenteditable="true"] ul,
+[contenteditable="true"] ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+[contenteditable="true"] li {
+  margin-bottom: 0.25rem;
+  line-height: 1.5;
+}
+
+[contenteditable="true"] ul[style*="'- '"] {
+  padding-left: 1.25rem;
+}
+
